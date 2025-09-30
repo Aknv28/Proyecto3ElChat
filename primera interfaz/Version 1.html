@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mamá Grande Burger Grill</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'negro-principal': '#111111',
+                        'gris-oscuro': '#1C1C1C',
+                        'gris-medio': '#AAAAAA',
+                        'rojo-intenso': '#B51E23',
+                        'rojo-suave': '#D9322A',
+                        'gris-claro': '#E0E0E0',
+                    },
+                    fontFamily: {
+                        'display': ['Montserrat', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-negro-principal text-white">
+    
+    <!-- Pantalla 1: Menú -->
+    <div id="menu-screen" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h1 class="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-center tracking-tight">
+                    MAMÁ GRANDE BURGER GRILL
+                </h1>
+                <p class="text-gris-medio text-center mt-2 font-medium">Menú – La Paz, Bolivia</p>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            
+            <!-- Hamburguesas -->
+            <section class="mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <svg class="w-8 h-8 text-rojo-intenso" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 13h-2v-2h2v2zm-4 0h-2v-2h2v2zm-4 0h-2v-2h2v2zM2 11v2h2v-2H2zm4 0v2h2v-2H6zm4 0v2h2v-2h-2zm-8 4v6h20v-6H2zm2 4v-2h16v2H4zm16-10V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v4h20zm-2 0H4V5h16v4z"/>
+                    </svg>
+                    <h2 class="font-display font-bold text-2xl sm:text-3xl">HAMBURGUESAS</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">SIMPLE</h3>
+                                <p class="text-gris-medio text-sm">Clásica y deliciosa</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">35 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('simple', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="simple-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('simple', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">PASIÓN DULCE</h3>
+                                <p class="text-gris-medio text-sm">Sabor único e irresistible</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">40 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('pasion', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="pasion-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('pasion', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">CLÁSICA</h3>
+                                <p class="text-gris-medio text-sm">La favorita de siempre</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">35 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('clasica', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="clasica-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('clasica', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">HAWAIANA</h3>
+                                <p class="text-gris-medio text-sm">Toque tropical especial</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">40 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('hawaiana', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="hawaiana-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('hawaiana', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">PRIMAVERA</h3>
+                                <p class="text-gris-medio text-sm">Fresca y deliciosa</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">38 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('primavera', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="primavera-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('primavera', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">VIUDA NEGRA</h3>
+                                <p class="text-gris-medio text-sm">Picante y explosiva</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">42 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('viuda', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="viuda-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('viuda', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-display font-bold text-xl mb-1">MASTER BUEY</h3>
+                                <p class="text-gris-medio text-sm">Premium y contundente</p>
+                            </div>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">45 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('master', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="master-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('master', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Refrescos -->
+            <section class="mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <svg class="w-8 h-8 text-rojo-intenso" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 2l2.01 18.23C5.13 21.23 5.97 22 7 22h10c1.03 0 1.87-.77 1.99-1.77L21 2H3zm9 17c-1.66 0-3-1.34-3-3 0-2 3-5.4 3-5.4s3 3.4 3 5.4c0 1.66-1.34 3-3 3zm6.33-11H5.67l-.44-4h13.53l-.43 4z"/>
+                    </svg>
+                    <h2 class="font-display font-bold text-2xl sm:text-3xl">REFRESCOS</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-display font-bold text-xl">COCA COLA</h3>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">7 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('coca', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="coca-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('coca', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-display font-bold text-xl">FANTA</h3>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">7 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('fanta', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="fanta-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('fanta', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Salsas -->
+            <section class="mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <svg class="w-8 h-8 text-rojo-intenso" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/>
+                    </svg>
+                    <h2 class="font-display font-bold text-2xl sm:text-3xl">SALSAS EXTRAS</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-display font-bold text-xl">MAYONESA</h3>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">3 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('mayo', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="mayo-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('mayo', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all duration-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-display font-bold text-xl">SALSA DE CASA</h3>
+                            <span class="font-display font-bold text-xl text-rojo-intenso">3 Bs</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                            <button onclick="updateQuantity('casa', -1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">-</button>
+                            <span id="casa-qty" class="font-bold text-lg min-w-[2rem] text-center">0</span>
+                            <button onclick="updateQuantity('casa', 1)" class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors duration-200 font-bold text-lg">+</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Botón confirmar -->
+            <div class="flex justify-center">
+                <button onclick="confirmarPedido()" class="w-full sm:w-auto px-12 py-4 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg">
+                    CONFIRMAR PEDIDO
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Pantalla 2: Resumen -->
+    <div id="summary-screen" class="min-h-screen hidden">
+        <header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-50">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h1 class="font-display font-black text-3xl sm:text-4xl text-center tracking-tight">
+                    TU PEDIDO EN MAMÁ GRANDE
+                </h1>
+                <p class="text-gris-medio text-center mt-2 font-medium">Resumen de compra</p>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            <!-- Tabla de productos -->
+            <div class="bg-gris-oscuro rounded-lg overflow-hidden mb-8">
+                <table class="w-full">
+                    <thead class="bg-negro-principal">
+                        <tr>
+                            <th class="px-4 sm:px-6 py-4 text-left font-display font-bold text-sm sm:text-base">PRODUCTO</th>
+                            <th class="px-4 sm:px-6 py-4 text-center font-display font-bold text-sm sm:text-base">CANT.</th>
+                            <th class="px-4 sm:px-6 py-4 text-right font-display font-bold text-sm sm:text-base">SUBTOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order-items" class="divide-y divide-negro-principal">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total -->
+            <div class="bg-gris-oscuro rounded-lg p-6 sm:p-8 mb-8">
+                <div class="flex justify-between items-center">
+                    <span class="font-display font-bold text-2xl sm:text-3xl">TOTAL A PAGAR</span>
+                    <span id="total-amount" class="font-display font-black text-3xl sm:text-4xl text-rojo-intenso">0 Bs</span>
+                </div>
+            </div>
+
+            <!-- Opciones de entrega -->
+            <div class="bg-gris-oscuro rounded-lg p-6 sm:p-8 mb-8">
+                <h3 class="font-display font-bold text-xl mb-6">TIPO DE SERVICIO</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center gap-4 cursor-pointer group">
+                        <input type="radio" name="delivery-type" value="local" checked class="appearance-none w-6 h-6 border-2 border-gris-medio rounded-full checked:border-rojo-intenso checked:ring-4 checked:ring-rojo-intenso checked:ring-opacity-30 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-rojo-intenso" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 2.84L17 11v7h-2v-5H9v5H7v-7l5-5.16z"/>
+                            </svg>
+                            <span class="font-bold text-lg">Comer en el local</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-4 cursor-pointer group">
+                        <input type="radio" name="delivery-type" value="llevar" class="appearance-none w-6 h-6 border-2 border-gris-medio rounded-full checked:border-rojo-intenso checked:ring-4 checked:ring-rojo-intenso checked:ring-opacity-30 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-rojo-intenso" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 6h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9 4h6v2H9V4zm11 15H4v-2h16v2zm0-5H4V8h3v2h2V8h6v2h2V8h3v6z"/>
+                            </svg>
+                            <span class="font-bold text-lg">Para llevar</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button onclick="editarOrden()" class="flex-1 px-6 py-4 bg-gris-oscuro hover:bg-opacity-80 text-white font-display font-bold text-lg rounded-lg transition-all duration-200">
+                    EDITAR ORDEN
+                </button>
+                <button onclick="cancelarOrden()" class="flex-1 px-6 py-4 bg-rojo-suave hover:bg-opacity-80 text-white font-display font-bold text-lg rounded-lg transition-all duration-200">
+                    CANCELAR ORDEN
+                </button>
+                <button onclick="confirmarOrdenFinal()" class="flex-1 px-6 py-4 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-lg rounded-lg transition-all duration-200 shadow-lg">
+                    CONFIRMAR ORDEN
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const productos = {
+            simple: { nombre: 'Simple', precio: 35, cantidad: 0 },
+            pasion: { nombre: 'Pasión Dulce', precio: 40, cantidad: 0 },
+            clasica: { nombre: 'Clásica', precio: 35, cantidad: 0 },
+            hawaiana: { nombre: 'Hawaiana', precio: 40, cantidad: 0 },
+            primavera: { nombre: 'Primavera', precio: 38, cantidad: 0 },
+            viuda: { nombre: 'Viuda Negra', precio: 42, cantidad: 0 },
+            master: { nombre: 'Master Buey', precio: 45, cantidad: 0 },
+            coca: { nombre: 'Coca Cola', precio: 7, cantidad: 0 },
+            fanta: { nombre: 'Fanta', precio: 7, cantidad: 0 },
+            mayo: { nombre: 'Mayonesa', precio: 3, cantidad: 0 },
+            casa: { nombre: 'Salsa de Casa', precio: 3, cantidad: 0 }
+        };
+
+        function updateQuantity(id, delta) {
+            productos[id].cantidad = Math.max(0, productos[id].cantidad + delta);
+            document.getElementById(`${id}-qty`).textContent = productos[id].cantidad;
+        }
+
+        function confirmarPedido() {
+            const hasItems = Object.values(productos).some(p => p.cantidad > 0);
+            if (!hasItems) {
+                alert('Por favor, selecciona al menos un producto');
+                return;
+            }
+
+            const orderItems = document.getElementById('order-items');
+            orderItems.innerHTML = '';
+            let total = 0;
+
+            Object.values(productos).forEach(producto => {
+                if (producto.cantidad > 0) {
+                    const subtotal = producto.precio * producto.cantidad;
+                    total += subtotal;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 sm:px-6 py-4 font-medium">${producto.nombre}</td>
+                        <td class="px-4 sm:px-6 py-4 text-center font-bold">${producto.cantidad}</td>
+                        <td class="px-4 sm:px-6 py-4 text-right font-bold">${subtotal} Bs</td>
+                    `;
+                    orderItems.appendChild(row);
+                }
+            });
+
+            document.getElementById('total-amount').textContent = `${total} Bs`;
+            document.getElementById('menu-screen').classList.add('hidden');
+            document.getElementById('summary-screen').classList.remove('hidden');
+        }
+
+        function editarOrden() {
+            document.getElementById('summary-screen').classList.add('hidden');
+            document.getElementById('menu-screen').classList.remove('hidden');
+        }
+
+        function cancelarOrden() {
+            if (confirm('¿Estás seguro de que deseas cancelar tu orden?')) {
+                Object.values(productos).forEach(producto => {
+                    producto.cantidad = 0;
+                });
+                Object.keys(productos).forEach(id => {
+                    const qtyElement = document.getElementById(`${id}-qty`);
+                    if (qtyElement) qtyElement.textContent = '0';
+                });
+                document.getElementById('summary-screen').classList.add('hidden');
+                document.getElementById('menu-screen').classList.remove('hidden');
+            }
+        }
+
+        function confirmarOrdenFinal() {
+            const deliveryType = document.querySelector('input[name="delivery-type"]:checked').value;
+            const typeText = deliveryType === 'local' ? 'en el local' : 'para llevar';
+            alert(`¡Orden confirmada ${typeText}! Gracias por tu pedido en Mamá Grande Burger Grill.`);
+            
+            // Reiniciar todo
+            Object.values(productos).forEach(producto => {
+                producto.cantidad = 0;
+            });
+            Object.keys(productos).forEach(id => {
+                const qtyElement = document.getElementById(`${id}-qty`);
+                if (qtyElement) qtyElement.textContent = '0';
+            });
+            document.getElementById('summary-screen').classList.add('hidden');
+            document.getElementById('menu-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
