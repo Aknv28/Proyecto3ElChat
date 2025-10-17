@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cajero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-[#111111] min-h-screen">
+    <!-- Header -->
+    <header class="bg-[#1C1C1C] border-b border-[#AAAAAA]/20">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-black text-white">Dashboard Cajero</h1>
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-[#B51E23] hover:bg-[#D9322A] text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105">
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        <!-- Welcome Section -->
+        <div class="mb-12">
+            <h2 class="text-4xl font-black text-white mb-2">Bienvenido</h2>
+            <p class="text-[#AAAAAA] text-lg font-medium">Accede a tu caja registradora</p>
+        </div>
+
+        <!-- Card Ver Cajas -->
+        <div class="max-w-md mx-auto">
+            <div class="bg-[#1C1C1C] rounded-2xl p-8 border border-[#AAAAAA]/10 hover:border-[#B51E23]/50 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-[#B51E23]/20">
+                <div class="flex items-center justify-center w-20 h-20 bg-[#B51E23]/10 rounded-xl mb-6 mx-auto">
+                    <svg class="w-10 h-10 text-[#B51E23]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3 text-center">Ver Cajas</h3>
+                <p class="text-[#AAAAAA] font-medium mb-6 text-center">Accede a tu caja registradora y gestiona las ventas</p>
+                <a href="{% url 'menu' %}" class="flex items-center justify-center text-[#B51E23] hover:text-[#D9322A] font-semibold transition-colors duration-300">
+    Acceder a Caja
+    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+    </svg>
+</a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="mt-12 max-w-md mx-auto">
+            <div class="bg-[#1C1C1C] rounded-xl p-6 border border-[#AAAAAA]/10">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-[#AAAAAA] font-medium">Ventas de Hoy</p>
+                    <span class="text-xs bg-[#B51E23]/10 text-[#B51E23] px-2 py-1 rounded-full font-semibold">ACTIVO</span>
+                </div>
+                <p class="text-4xl font-black text-[#B51E23] mb-2">Bs. 1,250.50</p>
+                <p class="text-sm text-[#AAAAAA] font-medium">23 transacciones realizadas</p>
+            </div>
+        </div>
+    </main>
+</body>
+</htm

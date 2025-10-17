@@ -1,0 +1,99 @@
+<div class="min-h-screen bg-negro-principal text-white">
+    <!-- Header -->
+    <header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 class="font-display font-black text-3xl text-center text-rojo-intenso">RESUMEN DEL PEDIDO</h1>
+            <p class="text-white text-center mt-2 font-medium">Verificar antes de enviar a cocina</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Tabla de productos -->
+        <div class="bg-gris-oscuro rounded-lg overflow-hidden mb-8">
+            <table class="w-full">
+                <thead class="bg-negro-principal">
+                    <tr>
+                        <th class="px-6 py-4 text-left font-display font-bold text-rojo-intenso">PRODUCTO</th>
+                        <th class="px-6 py-4 text-center font-display font-bold text-rojo-intenso">CANT.</th>
+                        <th class="px-6 py-4 text-center font-display font-bold text-rojo-intenso">PRECIO</th>
+                        <th class="px-6 py-4 text-right font-display font-bold text-rojo-intenso">SUBTOTAL</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-negro-principal">
+                    {% for item in pedido %}
+                        <tr>
+                            <td class="px-6 py-4 font-medium text-white">{{ item.nombre }}</td>
+                            <td class="px-6 py-4 text-center font-bold text-white">{{ item.cantidad }}</td>
+                            <td class="px-6 py-4 text-center font-medium text-white">{{ item.precio }} Bs</td>
+                            <td class="px-6 py-4 text-right font-bold text-rojo-intenso">{{ item.subtotal }} Bs</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total -->
+        <div class="bg-gris-oscuro rounded-lg p-8 mb-8">
+            <div class="flex justify-between items-center">
+                <span class="font-display font-bold text-3xl text-white">TOTAL A PAGAR</span>
+                <span class="font-display font-black text-4xl text-rojo-intenso">{{ total }} Bs</span>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <form method="POST">
+            {% csrf_token %}
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button type="submit" 
+                        name="action" 
+                        value="editar"
+                        class="flex-1 px-6 py-4 bg-gris-oscuro hover:bg-opacity-80 text-white font-display font-bold text-lg rounded-lg transition-all">
+                    EDITAR ORDEN
+                </button>
+                <button type="submit" 
+                        name="action" 
+                        value="cancelar"
+                        class="flex-1 px-6 py-4 bg-rojo-suave hover:bg-opacity-80 text-white font-display font-bold text-lg rounded-lg transition-all">
+                    CANCELAR ORDEN
+                </button>
+                <button type="submit" 
+                        name="action" 
+                        value="mandar_a_cocina"
+                        class="flex-1 px-6 py-4 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-lg rounded-lg transition-all shadow-lg">
+                    ENVIAR A COCINA
+                </button>
+            </div>
+        </form>
+    </main>
+</div>
+
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-display { font-family: 'Montserrat', sans-serif; }
+</style>
+<script>
+    document.querySelector('button[value="cancelar"]').addEventListener('click', function(e) {
+        if (!confirm('¿Estás seguro de cancelar este pedido?')) {
+            e.preventDefault();
+        }
+    });
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'negro-principal': '#111111',
+                    'gris-oscuro': '#1C1C1C',
+                    'gris-medio': '#AAAAAA',
+                    'rojo-intenso': '#B51E23',
+                    'rojo-suave': '#D9322A',
+                    'gris-claro': '#E0E0E0',
+                }
+            }
+        }
+    }
+</script>
