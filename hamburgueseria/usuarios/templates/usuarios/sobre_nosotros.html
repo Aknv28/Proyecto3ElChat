@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamburguesería Mamá Grande - Sobre Nosotros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'negro-principal': '#111111',
+                        'gris-oscuro': '#1C1C1C',
+                        'gris-medio': '#AAAAAA',
+                        'rojo-intenso': '#B51E23',
+                        'rojo-suave': '#D9322A',
+                        'gris-claro': '#E0E0E0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+        .font-display { 
+            font-family: 'Montserrat', sans-serif; 
+        }
+        
+        .hero-about {
+            background: linear-gradient(135deg, rgba(181, 30, 35, 0.95), rgba(17, 17, 17, 0.9)),
+                        url('https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, rgba(181, 30, 35, 0.2), rgba(28, 28, 28, 1));
+        }
+        
+        .commitment-card {
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .commitment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(181, 30, 35, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .commitment-card:hover::before {
+            left: 100%;
+        }
+        
+        .commitment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(181, 30, 35, 0.3);
+        }
+        
+        .value-card {
+            transition: all 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateX(10px);
+        }
+        
+        .value-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .value-card:hover .value-icon {
+            transform: rotate(360deg) scale(1.2);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .image-overlay {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(181, 30, 35, 0.3), rgba(17, 17, 17, 0.5));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .image-overlay:hover::after {
+            opacity: 1;
+        }
+        
+        .image-overlay img {
+            transition: transform 0.5s ease;
+        }
+        
+        .image-overlay:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-negro-principal text-white">
+
+{% include 'usuarios/header.html' %}
+
+<!-- Hero Section -->
+<section class="hero-about py-16 sm:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-white mb-4 tracking-tight">
+            SOBRE NOSOTROS
+        </h1>
+        <p class="text-xl sm:text-2xl text-white max-w-2xl mx-auto">
+            Conoce la historia detrás de las mejores hamburguesas de La Paz
+        </p>
+    </div>
+</section>
+
+<!-- Nuestra Historia -->
+<section class="py-16 bg-gris-oscuro">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-rojo-intenso mb-6">
+                    NUESTRA HISTORIA
+                </h2>
+                <div class="space-y-4 text-white text-lg leading-relaxed">
+                    <p>
+                        Mamá Grande nació con el objetivo de ofrecer algo más que una simple hamburguesa. Desde el primer día en <span class="text-rojo-intenso font-bold">2021</span>, nos hemos dedicado a innovar y crear un ambiente donde la comida de calidad se combina con un servicio cálido y amigable.
+                    </p>
+                    <p>
+                        Nuestro local está situado en la emblemática <span class="text-rojo-intenso font-bold">Plaza Avaroa</span>, un punto estratégico de la ciudad, perfecto para disfrutar de un buen platillo en cualquier momento del día.
+                    </p>
+                    <p>
+                        Hemos ido creciendo y evolucionando para satisfacer las expectativas de nuestros clientes, siempre con el compromiso de mantener la excelencia.
+                    </p>
+                </div>
+                
+                <!-- Imagen adicional -->
+                <div class="mt-6 image-overlay rounded-xl overflow-hidden shadow-2xl">
+                    <img src="https://scontent.flpb1-1.fna.fbcdn.net/v/t39.30808-6/494258795_9624497884300537_4940630259149494843_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_ohc=w6NqYtAoMM0Q7kNvwGJFAIu&_nc_oc=Adn6wj8yn5DICx5u9Lg7mNPLPkaep2-F9dj39w-xOzdL9Q4RZ38_xWApAWw4wajNXPrx5Nf1dk-Qn4XUzHR0brMk&_nc_zt=23&_nc_ht=scontent.flpb1-1.fna&_nc_gid=OLJRDb5muAzfT9XC-N8gpA&oh=00_AffQyoNUVRgroJ3WyctX0_7YAyl1pHmLNVEmm4QzCMERFQ&oe=68FC8AE9" 
+                         alt="Restaurante acogedor" 
+                         class="w-full h-64 object-cover">
+                </div>
+            </div>
+            
+            <div class="bg-negro-principal rounded-xl p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <div class="bg-rojo-intenso rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4 shadow-lg float-animation">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-bold text-2xl text-rojo-intenso">Desde 2021</h3>
+                    <p class="text-gris-medio mt-2">Sirviendo las mejores hamburguesas</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-8">
+                    <div class="stat-card text-center bg-gris-oscuro rounded-lg p-4">
+                        <div class="text-3xl font-display font-black text-rojo-intenso mb-2">4+</div>
+                        <div class="text-gris-claro text-sm">Años de experiencia</div>
+                    </div>
+                    <div class="stat-card text-center bg-gris-oscuro rounded-lg p-4">
+                        <div class="text-3xl font-display font-black text-rojo-intenso mb-2">8</div>
+                        <div class="text-gris-claro text-sm">Hamburguesas únicas</div>
+                    </div>
+                    <div class="stat-card text-center bg-gris-oscuro rounded-lg p-4">
+                        <div class="text-3xl font-display font-black text-rojo-intenso mb-2">100%</div>
+                        <div class="text-gris-claro text-sm">Ingredientes frescos</div>
+                    </div>
+                    <div class="stat-card text-center bg-gris-oscuro rounded-lg p-4">
+                        <div class="text-3xl font-display font-black text-rojo-intenso mb-2">∞</div>
+                        <div class="text-gris-claro text-sm">Clientes satisfechos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nuestro Compromiso -->
+<section class="py-16 bg-negro-principal">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="font-display font-bold text-3xl sm:text-4xl text-rojo-intenso mb-4">
+                NUESTRO COMPROMISO
+            </h2>
+            <p class="text-white text-xl max-w-3xl mx-auto">
+                En Mamá Grande, cada hamburguesa es preparada con ingredientes frescos, como carne de res 100% seleccionada, salsas artesanales y pan de alta calidad.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="commitment-card bg-gris-oscuro rounded-xl p-8">
+                <div class="bg-rojo-intenso rounded-full w-16 h-16 flex items-center justify-center mb-6 mx-auto shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-display font-bold text-xl text-white text-center mb-3">Calidad Premium</h3>
+                <p class="text-gris-medio text-center">
+                    Carne de res 100% seleccionada y ingredientes de primera calidad en cada preparación
+                </p>
+            </div>
+
+            <div class="commitment-card bg-gris-oscuro rounded-xl p-8">
+                <div class="bg-rojo-intenso rounded-full w-16 h-16 flex items-center justify-center mb-6 mx-auto shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-display font-bold text-xl text-white text-center mb-3">Ambiente Acogedor</h3>
+                <p class="text-gris-medio text-center">
+                    Un espacio cálido y amigable donde te sentirás como en casa
+                </p>
+            </div>
+
+            <div class="commitment-card bg-gris-oscuro rounded-xl p-8">
+                <div class="bg-rojo-intenso rounded-full w-16 h-16 flex items-center justify-center mb-6 mx-auto shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="font-display font-bold text-xl text-white text-center mb-3">Innovación Constante</h3>
+                <p class="text-gris-medio text-center">
+                    Creamos sabores únicos y nos adaptamos a las expectativas de nuestros clientes
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Galería de Imágenes -->
+<section class="py-16 bg-gris-oscuro">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-display font-bold text-3xl sm:text-4xl text-rojo-intenso mb-12 text-center">
+            NUESTRO ESPACIO
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="image-overlay rounded-xl overflow-hidden shadow-lg">
+                <img src="https://scontent.flpb1-1.fna.fbcdn.net/v/t39.30808-6/474783053_122210476406228047_4840205284345838622_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=833d8c&_nc_ohc=mSmbjkCRMwoQ7kNvwGBGmsK&_nc_oc=AdmyYVuP9ALiDB3FL1mQxC8dTTJpIbp2W8rtsjpWW6_dBnM808HW6Gh313b4ZGQ84aV7BtZNX_qSpmpnTdT48M7J&_nc_zt=23&_nc_ht=scontent.flpb1-1.fna&_nc_gid=3xmGhVlQhoFcC4ZNiHg-MA&oh=00_Afd12v886oz7e-OuAqZHWSF1apVgJTQ50qwQKxdg5m3yEQ&oe=68FC7188" 
+                     alt="Ambiente del restaurante" 
+                     class="w-full h-64 object-cover">
+            </div>
+            <div class="image-overlay rounded-xl overflow-hidden shadow-lg">
+                <img src="https://scontent.flpb1-1.fna.fbcdn.net/v/t39.30808-6/481131642_649813757584538_1864889771787384751_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=gL3ITxYsT58Q7kNvwGSKBRQ&_nc_oc=AdnidMhN9-7vb0zCAWjqL5c9uRSNAewsP9nLsPhDKQfIUYQEKb14HYoPPZuZzAFXIZczpQ2vUESY3h27OYU4kMGV&_nc_zt=23&_nc_ht=scontent.flpb1-1.fna&_nc_gid=t7X95IuksCQn5vbNzmfOYw&oh=00_Afd8RxGfkESl2s0Grd0uwxI2c-_TEG0XwBOEt9_ZXcf0fQ&oe=68FC7CD4" 
+                     alt="Preparación de hamburguesas" 
+                     class="w-full h-64 object-cover">
+            </div>
+            <div class="image-overlay rounded-xl overflow-hidden shadow-lg">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnxDwQ62sCjiHZJt1xf7q9guU-Rbv3mpSd5Q&s" 
+                     alt="Ingredientes frescos" 
+                     class="w-full h-64 object-cover">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Valores -->
+<section class="py-16 bg-negro-principal">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-display font-bold text-3xl sm:text-4xl text-rojo-intenso mb-12 text-center">
+            NUESTROS VALORES
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="value-card flex gap-4 bg-gris-oscuro rounded-xl p-6">
+                <div class="flex-shrink-0">
+                    <div class="value-icon w-12 h-12 bg-rojo-intenso rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Pasión</h3>
+                    <p class="text-gris-medio">
+                        Amamos lo que hacemos y lo demostramos en cada hamburguesa que preparamos
+                    </p>
+                </div>
+            </div>
+
+            <div class="value-card flex gap-4 bg-gris-oscuro rounded-xl p-6">
+                <div class="flex-shrink-0">
+                    <div class="value-icon w-12 h-12 bg-rojo-intenso rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Excelencia</h3>
+                    <p class="text-gris-medio">
+                        Mantenemos los más altos estándares de calidad en todo momento
+                    </p>
+                </div>
+            </div>
+
+            <div class="value-card flex gap-4 bg-gris-oscuro rounded-xl p-6">
+                <div class="flex-shrink-0">
+                    <div class="value-icon w-12 h-12 bg-rojo-intenso rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Compromiso</h3>
+                    <p class="text-gris-medio">
+                        Trabajamos cada día para superar las expectativas de nuestros clientes
+                    </p>
+                </div>
+            </div>
+
+            <div class="value-card flex gap-4 bg-gris-oscuro rounded-xl p-6">
+                <div class="flex-shrink-0">
+                    <div class="value-icon w-12 h-12 bg-rojo-intenso rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-xl text-white mb-2">Autenticidad</h3>
+                    <p class="text-gris-medio">
+                        Sabor genuino con recetas propias y salsas artesanales
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Misión -->
+<section class="py-16 bg-gris-oscuro">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-negro-principal rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-rojo-intenso">
+            <div class="bg-rojo-intenso rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <h2 class="font-display font-bold text-3xl text-rojo-intenso mb-6">
+                NUESTRA MISIÓN
+            </h2>
+            <p class="text-white text-xl leading-relaxed">
+                Seguir brindando un <span class="text-rojo-intenso font-bold">sabor único</span> y un ambiente que te haga sentir como en casa. Queremos ser el lugar donde cada cliente viva una experiencia memorable con cada visita.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-rojo-intenso relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=1600&q=80" 
+             alt="Background" 
+             class="w-full h-full object-cover">
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-white mb-4">
+            ¡VEN A CONOCERNOS!
+        </h2>
+        <p class="text-white text-xl mb-8">
+            Descubre por qué somos el referente de hamburguesas en La Paz
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'servicios' %}" 
+               class="bg-white text-rojo-intenso hover:bg-gris-claro font-display font-bold py-4 px-8 rounded-lg text-lg transition-all shadow-lg hover:shadow-2xl hover:scale-105 transform">
+                VER MENÚ
+            </a>
+            <a href="{% url 'contactanos' %}" 
+               class="bg-negro-principal text-white hover:bg-gris-oscuro font-display font-bold py-4 px-8 rounded-lg text-lg transition-all shadow-lg border-2 border-white hover:scale-105 transform">
+                VISÍTANOS
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-negro-principal border-t border-gris-oscuro py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <p class="text-gris-medio mb-4">
+                &copy; 2025 <span class="text-rojo-intenso font-bold">Hamburguesería Mamá Grande</span> | Todos los derechos reservados
+            </p>
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="{% url 'index' %}" class="text-white hover:text-rojo-intenso transition-colors">Inicio</a>
+                <span class="text-gris-oscuro">|</span>
+                <a href="{% url 'servicios' %}" class="text-white hover:text-rojo-intenso transition-colors">Servicios</a>
+                <span class="text-gris-oscuro">|</span>
+                <a href="{% url 'contactanos' %}" class="text-white hover:text-rojo-intenso transition-colors">Contáctanos</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

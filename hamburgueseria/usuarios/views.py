@@ -179,3 +179,19 @@ def cambiar_estado_pedido(request, pedido_id):
         pedido.estado_actual = 'listo'
         pedido.save()
     return redirect('cocina_pedidos')  # Redirige nuevamente a la lista de pedidos
+
+
+def index(request):
+    return render(request, 'usuarios/index.html')
+
+def index(request):
+    return render(request, 'usuarios/index.html')
+
+def sobre_nosotros(request):
+    return render(request, 'usuarios/sobre_nosotros.html')
+
+def servicios(request):
+    return render(request, 'usuarios/servicios.html')
+
+def contactanos(request):
+    return render(request, 'usuarios/contactanos.html')

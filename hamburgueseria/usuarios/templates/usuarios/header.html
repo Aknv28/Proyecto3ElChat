@@ -1,0 +1,216 @@
+<!-- Fuentes y configuración de Tailwind -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'negro-principal': '#111111',
+                    'gris-oscuro': '#1C1C1C',
+                    'gris-medio': '#AAAAAA',
+                    'rojo-intenso': '#B51E23',
+                    'rojo-suave': '#D9322A',
+                    'gris-claro': '#E0E0E0',
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    body { 
+        font-family: 'Inter', sans-serif; 
+    }
+    .font-display { 
+        font-family: 'Montserrat', sans-serif; 
+    }
+    
+    /* Animación suave para el menú móvil */
+    #mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out;
+    }
+    
+    #mobile-menu.active {
+        max-height: 500px;
+    }
+    
+    /* Animación del botón hamburguesa */
+    .hamburger-line {
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+    
+    .hamburger-active .line1 {
+        transform: rotate(45deg) translateY(8px);
+    }
+    
+    .hamburger-active .line2 {
+        opacity: 0;
+    }
+    
+    .hamburger-active .line3 {
+        transform: rotate(-45deg) translateY(-8px);
+    }
+    
+    /* Efecto hover mejorado */
+    .nav-link {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: #B51E23;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+    
+    .nav-link:hover::before {
+        width: 80%;
+    }
+</style>
+
+<!-- Header -->
+<header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-50 shadow-lg backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4 sm:py-6">
+            <!-- Logo/Título -->
+            <a href="{% url 'index' %}" class="flex-shrink-0 group">
+                <h1 class="font-display font-black text-2xl sm:text-3xl tracking-tight text-rojo-intenso group-hover:text-rojo-suave transition-colors duration-300">
+                    MAMA GRANDE
+                </h1>
+                <p class="text-gris-medio text-xs sm:text-sm font-medium mt-1">
+                    Hamburguesería
+                </p>
+            </a>
+
+            <!-- Navigation Links - Desktop -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2" aria-label="Navegación principal">
+                <a href="{% url 'index' %}" 
+                   class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
+                    Inicio
+                </a>
+                <a href="{% url 'sobre_nosotros' %}" 
+                   class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
+                    Sobre Nosotros
+                </a>
+                <a href="{% url 'servicios' %}" 
+                   class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
+                    Servicios
+                </a>
+                <a href="{% url 'contactanos' %}" 
+                   class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
+                    Contáctanos
+                </a>
+            </nav>
+
+            <!-- Right Side Buttons -->
+            <div class="flex items-center space-x-3">
+                <!-- Login Button -->
+                <a href="{% url 'login' %}" 
+                   class="hidden sm:block bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-2 px-6 rounded-lg uppercase text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 transform">
+                    Login
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" 
+                        class="md:hidden text-white p-2 rounded-lg hover:bg-gris-oscuro transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-rojo-intenso"
+                        aria-label="Menú de navegación"
+                        aria-expanded="false"
+                        aria-controls="mobile-menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path class="hamburger-line line1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16"></path>
+                        <path class="hamburger-line line2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path>
+                        <path class="hamburger-line line3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav id="mobile-menu" 
+             class="md:hidden"
+             aria-label="Navegación móvil">
+            <div class="flex flex-col space-y-2 pb-4">
+                <a href="{% url 'index' %}" 
+                   class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
+                    Inicio
+                </a>
+                <a href="{% url 'sobre_nosotros' %}" 
+                   class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
+                    Sobre Nosotros
+                </a>
+                <a href="{% url 'servicios' %}" 
+                   class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
+                    Servicios
+                </a>
+                <a href="{% url 'contactanos' %}" 
+                   class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
+                    Contáctanos
+                </a>
+                <!-- Login button for mobile -->
+                <a href="{% url 'login' %}" 
+                   class="mx-4 mt-2 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md">
+                    Login
+                </a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- JavaScript del Header -->
+<script>
+    // Toggle Mobile Menu con animación mejorada
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+            
+            // Toggle clase active
+            mobileMenu.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('hamburger-active');
+            
+            // Actualizar aria-expanded
+            mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('hamburger-active');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('hamburger-active');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    // Resaltar página activa
+    const currentLocation = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a:not([href*="login"])');
+    
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentLocation) {
+            link.classList.add('text-rojo-intenso', 'bg-gris-oscuro');
+        }
+    });
+</script>
