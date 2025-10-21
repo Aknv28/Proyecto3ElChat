@@ -6,21 +6,47 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h1 class="font-display font-black text-3xl sm:text-4xl tracking-tight">MAMÁ GRANDE</h1>
+                        <h1 class="font-display font-black text-3xl sm:text-4xl tracking-tight">MAMA GRANDE</h1>
                         <p class="text-gris-medio mt-2 font-medium">Realiza tu pedido</p>
                     </div>
+                    <a href="javascript:history.back()" 
+                       class="bg-gris-oscuro border-2 border-rojo-intenso hover:bg-rojo-intenso text-white font-display font-black py-2 px-6 rounded-xl uppercase text-sm transition-all duration-300">
+                        ⬅ Volver
+                    </a>
                 </div>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Barra de Búsqueda -->
+            <section class="mb-8">
+                <div class="bg-gris-oscuro rounded-lg p-6">
+                    <div class="relative">
+                        <input type="text" 
+                               id="busqueda" 
+                               placeholder="🔍 Buscar productos..." 
+                               class="w-full bg-negro-principal text-white px-6 py-4 rounded-lg border-2 border-gris-medio focus:border-rojo-intenso outline-none font-medium text-lg transition-colors"
+                               autocomplete="off">
+                        <div id="error-busqueda" class="hidden mt-3 text-rojo-intenso font-medium text-sm">
+                            ⚠️ Solo se permiten letras y espacios
+                        </div>
+                        <div id="sin-resultados" class="hidden mt-3 text-gris-medio font-medium text-sm">
+                            No se encontraron productos que coincidan con tu búsqueda
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {% for categoria, productos_categoria in productos_por_categoria.items %}
-                <section class="mb-12">
-                    <h2 class="font-display font-bold text-2xl mb-6">{{ categoria|upper }}</h2>
+                <section class="mb-12 categoria-section" data-categoria="{{ categoria }}">
+                    <h2 class="font-display font-bold text-2xl mb-6 categoria-titulo">{{ categoria|upper }}</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {% for producto in productos_categoria %}
-                            <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all">
+                            <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all producto-item" 
+                                 data-nombre="{{ producto.nombre|lower }}" 
+                                 data-descripcion="{{ producto.descripcion|lower }}">
                                 <div class="image-overlay">
                                     <img src="{{ producto.imagen_url }}" 
                                          alt="{{ producto.nombre }}" 
@@ -103,12 +129,17 @@
         height: 50%; 
         background: linear-gradient(to top, rgba(17, 17, 17, 0.8), transparent); 
     }
+    .producto-item.oculto { display: none; }
+    .categoria-section.oculto { display: none; }
 </style>
 
 <script>
     function incrementQuantity(inputId) {
         const input = document.getElementById(inputId);
-        input.value = parseInt(input.value || 0) + 1;
+        const valorActual = parseInt(input.value || 0);
+        if (valorActual < 20) {
+            input.value = valorActual + 1;
+        }
     }
 
     function decrementQuantity(inputId) {
@@ -116,19 +147,84 @@
         input.value = Math.max(0, parseInt(input.value || 0) - 1);
     }
 
-    function incrementQuantity(inputId) {
-    const input = document.getElementById(inputId);
-    const valorActual = parseInt(input.value || 0);
-    if (valorActual < 20) {  // Límite máximo
-        input.value = valorActual + 1;
-    }
-}
+    // Función de validación y búsqueda
+    const inputBusqueda = document.getElementById('busqueda');
+    const errorBusqueda = document.getElementById('error-busqueda');
+    const sinResultados = document.getElementById('sin-resultados');
+    let timeoutBusqueda;
 
-function decrementQuantity(inputId) {
-    const input = document.getElementById(inputId);
-    input.value = Math.max(0, parseInt(input.value || 0) - 1);
-}
+    inputBusqueda.addEventListener('input', function(e) {
+        clearTimeout(timeoutBusqueda);
+        
+        const valor = e.target.value;
+        
+        // Validar que solo contenga letras, espacios, acentos y ñ
+        const regex = /^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/;
+        
+        if (!regex.test(valor)) {
+            // Remover caracteres no válidos
+            e.target.value = valor.replace(/[^a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]/g, '');
+            errorBusqueda.classList.remove('hidden');
+            
+            // Ocultar mensaje de error después de 3 segundos
+            setTimeout(() => {
+                errorBusqueda.classList.add('hidden');
+            }, 3000);
+        } else {
+            errorBusqueda.classList.add('hidden');
+        }
+        
+        // Realizar búsqueda con delay
+        timeoutBusqueda = setTimeout(() => {
+            realizarBusqueda(e.target.value.toLowerCase().trim());
+        }, 300);
+    });
+
+    function realizarBusqueda(termino) {
+        const productos = document.querySelectorAll('.producto-item');
+        const categorias = document.querySelectorAll('.categoria-section');
+        let hayResultados = false;
+
+        if (termino === '') {
+            // Mostrar todos los productos y categorías
+            productos.forEach(prod => prod.classList.remove('oculto'));
+            categorias.forEach(cat => cat.classList.remove('oculto'));
+            sinResultados.classList.add('hidden');
+            return;
+        }
+
+        // Filtrar productos
+        productos.forEach(producto => {
+            const nombre = producto.dataset.nombre;
+            const descripcion = producto.dataset.descripcion;
+            
+            if (nombre.includes(termino) || descripcion.includes(termino)) {
+                producto.classList.remove('oculto');
+                hayResultados = true;
+            } else {
+                producto.classList.add('oculto');
+            }
+        });
+
+        // Mostrar/ocultar categorías según si tienen productos visibles
+        categorias.forEach(categoria => {
+            const productosVisibles = categoria.querySelectorAll('.producto-item:not(.oculto)');
+            if (productosVisibles.length > 0) {
+                categoria.classList.remove('oculto');
+            } else {
+                categoria.classList.add('oculto');
+            }
+        });
+
+        // Mostrar mensaje si no hay resultados
+        if (!hayResultados) {
+            sinResultados.classList.remove('hidden');
+        } else {
+            sinResultados.classList.add('hidden');
+        }
+    }
 </script>
+
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -157,7 +253,7 @@ document.querySelector('form').addEventListener('submit', function(e) {
     });
 
     if (totalSeleccionado === 0) {
-        e.preventDefault(); // detener el envío
+        e.preventDefault();
         alert("Debes seleccionar al menos un producto para continuar.");
     }
 });

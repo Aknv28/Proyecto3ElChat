@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Cocinero</title>
+    <title>Cocina</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,10 +22,10 @@
     <header class="bg-[#1C1C1C] border-b border-[#AAAAAA]/20">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-black text-white">Dashboard Cocinero</h1>
+                <h1 class="text-3xl font-black text-white">Cocina</h1>
                 <form action="{% url 'logout' %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="bg-[#B51E23] hover:bg-[#D9322A] text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    <button type="submit" class="bg-[#B51E23] hover:bg-[#D9322A] text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-300">
                         Cerrar sesión
                     </button>
                 </form>
@@ -35,54 +35,39 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-12">
-        <!-- Welcome Section -->
-        <div class="mb-12">
-            <h2 class="text-4xl font-black text-white mb-2">Bienvenido</h2>
-            <p class="text-[#AAAAAA] text-lg font-medium">Gestiona los pedidos de la cocina</p>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-[#1C1C1C] rounded-xl p-8 border border-[#AAAAAA]/10">
+                <p class="text-[#AAAAAA] font-medium mb-3">Pedidos Pendientes</p>
+                <p class="text-5xl font-black text-[#B51E23]">8</p>
+            </div>
+            <div class="bg-[#1C1C1C] rounded-xl p-8 border border-[#AAAAAA]/10">
+                <p class="text-[#AAAAAA] font-medium mb-3">Completados Hoy</p>
+                <p class="text-5xl font-black text-white">47</p>
+            </div>
+            <div class="bg-[#1C1C1C] rounded-xl p-8 border border-[#AAAAAA]/10 flex items-center justify-between">
+                <div>
+                    <p class="text-[#AAAAAA] font-medium mb-3">Estado</p>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-[#B51E23] rounded-full animate-pulse mr-3"></div>
+                        <span class="text-white font-bold text-lg">OPERATIVA</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Card Ver Cocina -->
-        <div class="max-w-md mx-auto">
-            <div class="bg-[#1C1C1C] rounded-2xl p-8 border border-[#AAAAAA]/10 hover:border-[#B51E23]/50 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-[#B51E23]/20">
-                <div class="flex items-center justify-center w-20 h-20 bg-[#B51E23]/10 rounded-xl mb-6 mx-auto">
-                    <svg class="w-10 h-10 text-[#B51E23]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Main Action Card -->
+        <div class="max-w-2xl mx-auto">
+            <a href="{% url 'cocina_pedidos' %}" class="block bg-[#B51E23] hover:bg-[#D9322A] rounded-2xl p-12 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-[#B51E23]/30">
+                <div class="flex items-center justify-center mb-6">
+                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-3 text-center">Ver Cocina</h3>
-                <p class="text-[#AAAAAA] font-medium mb-6 text-center">Monitorea y gestiona los pedidos pendientes en cocina</p>
-                <a href="{% url 'cocina_pedidos' %}" class="flex items-center justify-center text-[#B51E23] hover:text-[#D9322A] font-semibold transition-colors duration-300">
-    Acceder a Cocina
-    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-    </svg>
-</a>
-
-            </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="mt-12 max-w-md mx-auto grid grid-cols-2 gap-4">
-            <div class="bg-[#1C1C1C] rounded-xl p-6 border border-[#AAAAAA]/10">
-                <p class="text-[#AAAAAA] font-medium mb-2 text-sm">Pedidos Pendientes</p>
-                <p class="text-4xl font-black text-[#B51E23]">8</p>
-            </div>
-            <div class="bg-[#1C1C1C] rounded-xl p-6 border border-[#AAAAAA]/10">
-                <p class="text-[#AAAAAA] font-medium mb-2 text-sm">Completados Hoy</p>
-                <p class="text-4xl font-black text-white">47</p>
-            </div>
-        </div>
-
-        <!-- Status Indicator -->
-        <div class="mt-6 max-w-md mx-auto">
-            <div class="bg-[#1C1C1C] rounded-xl p-4 border border-[#AAAAAA]/10 flex items-center justify-between">
-                <div class="flex items-center">
-                    <div class="w-3 h-3 bg-[#B51E23] rounded-full animate-pulse mr-3"></div>
-                    <p class="text-[#E0E0E0] font-semibold">Estado de Cocina</p>
-                </div>
-                <span class="text-xs bg-[#B51E23]/10 text-[#B51E23] px-3 py-1 rounded-full font-semibold">OPERATIVA</span>
-            </div>
+                <h2 class="text-4xl font-black text-white text-center mb-3">Ver Pedidos</h2>
+                <p class="text-white/80 text-center text-lg font-medium">Gestiona todos los pedidos de la cocina</p>
+            </a>
         </div>
     </main>
 </body>
-</htm
+</html>

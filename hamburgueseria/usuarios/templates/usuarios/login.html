@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+       {% include 'usuarios/header.html' %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,94 +33,101 @@
         }
     </style>
 </head>
-<body class="bg-negro-principal min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-    
-    <!-- Elementos decorativos de fondo -->
-    <div class="absolute top-0 left-0 w-96 h-96 bg-rojo-intenso/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-96 h-96 bg-rojo-suave/5 rounded-full blur-3xl"></div>
+<body class="bg-negro-principal min-h-screen">
 
-    <div class="w-full max-w-md relative z-10">
-        <div class="bg-gris-oscuro rounded-2xl shadow-2xl p-10 border border-gris-medio/10 backdrop-blur-sm">
-            
-            <!-- Título -->
-            <div class="text-center mb-10">
-                <div class="inline-block">
-                    <h2 class="text-blanco text-5xl font-black mb-2 tracking-tight relative">
-                        MAMA GRANDE
-                        <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rojo-intenso to-transparent"></div>
-                    </h2>
-                </div>
-                <p class="text-gris-medio text-sm font-bold mt-6 tracking-wide">ACCEDE A TU CUENTA</p>
-            </div>
+    <!-- Header incluido -->
+ 
 
-            <!-- Formulario Django -->
-            <form method="POST" class="space-y-6">
-                {% csrf_token %}
+    <!-- Contenedor principal del login -->
+    <div class="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 relative overflow-hidden">
+        
+        <!-- Elementos decorativos de fondo -->
+        <div class="absolute top-0 left-0 w-96 h-96 bg-rojo-intenso/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-rojo-suave/5 rounded-full blur-3xl"></div>
 
-                <!-- Campo Usuario -->
-                <div class="group">
-                    <label for="id_username" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest">
-                        Usuario
-                    </label>
-                    {{ form.username }}
-                    {% for error in form.username.errors %}
-                        <div class="text-rojo-intenso text-sm mt-1">{{ error }}</div>
-                    {% endfor %}
+        <div class="w-full max-w-md relative z-10 py-8">
+            <div class="bg-gris-oscuro rounded-2xl shadow-2xl p-10 border border-gris-medio/10 backdrop-blur-sm">
+                
+                <!-- Título -->
+                <div class="text-center mb-10">
+                    <div class="inline-block">
+                        <h2 class="text-blanco text-5xl font-black mb-2 tracking-tight relative">
+                            MAMA GRANDE
+                            <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rojo-intenso to-transparent"></div>
+                        </h2>
+                    </div>
+                    <p class="text-gris-medio text-sm font-bold mt-6 tracking-wide">ACCEDE A TU CUENTA</p>
                 </div>
 
-                <!-- Campo Contraseña -->
-                <div class="group">
-                    <label for="id_password" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest">
-                        Contraseña
-                    </label>
-                    {{ form.password }}
-                    {% for error in form.password.errors %}
-                        <div class="text-rojo-intenso text-sm mt-1">{{ error }}</div>
-                    {% endfor %}
-                </div>
+                <!-- Formulario Django -->
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
 
-                <!-- Botón -->
-                <button 
-                    type="submit"
-                    class="w-full bg-gradient-to-r from-rojo-intenso to-rojo-suave hover:from-rojo-suave hover:to-rojo-intenso text-blanco font-black py-5 px-6 rounded-xl uppercase tracking-widest text-base transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-rojo-intenso/40 active:scale-[0.98] mt-8"
-                >
-                    INGRESAR
-                </button>
-
-                <!-- Errores generales -->
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
-                    {% endfor %}
-                {% endfor %}
-
-                <!-- Mensajes -->
-                {% if messages %}
-                    <ul class="mt-4">
-                        {% for message in messages %}
-                            <li class="text-center text-gris-claro text-sm mt-2">{{ message }}</li>
+                    <!-- Campo Usuario -->
+                    <div class="group">
+                        <label for="id_username" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest">
+                            Usuario
+                        </label>
+                        {{ form.username }}
+                        {% for error in form.username.errors %}
+                            <div class="text-rojo-intenso text-sm mt-1">{{ error }}</div>
                         {% endfor %}
-                    </ul>
-                {% endif %}
-            </form>
+                    </div>
 
-            <!-- Estilo de los inputs Django -->
-            <script>
-                // Añadir clases de Tailwind a los campos generados por Django automáticamente
-                document.addEventListener('DOMContentLoaded', () => {
-                    const inputs = document.querySelectorAll('input');
-                    inputs.forEach(input => {
-                        input.classList.add(
-                            'w-full', 'px-5', 'py-4', 'bg-negro-principal',
-                            'border-2', 'border-gris-medio/20', 'rounded-xl',
-                            'text-blanco', 'placeholder-gris-medio/50',
-                            'focus:outline-none', 'focus:border-rojo-intenso',
-                            'focus:shadow-lg', 'focus:shadow-rojo-intenso/20',
-                            'transition-all', 'duration-300', 'font-bold'
-                        );
+                    <!-- Campo Contraseña -->
+                    <div class="group">
+                        <label for="id_password" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest">
+                            Contraseña
+                        </label>
+                        {{ form.password }}
+                        {% for error in form.password.errors %}
+                            <div class="text-rojo-intenso text-sm mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Botón -->
+                    <button 
+                        type="submit"
+                        class="w-full bg-gradient-to-r from-rojo-intenso to-rojo-suave hover:from-rojo-suave hover:to-rojo-intenso text-blanco font-black py-5 px-6 rounded-xl uppercase tracking-widest text-base transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-rojo-intenso/40 active:scale-[0.98] mt-8"
+                    >
+                        INGRESAR
+                    </button>
+
+                    <!-- Errores generales -->
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <!-- Mensajes -->
+                    {% if messages %}
+                        <ul class="mt-4">
+                            {% for message in messages %}
+                                <li class="text-center text-gris-claro text-sm mt-2">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </form>
+
+                <!-- Estilo de los inputs Django -->
+                <script>
+                    // Añadir clases de Tailwind a los campos generados por Django automáticamente
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const inputs = document.querySelectorAll('input');
+                        inputs.forEach(input => {
+                            input.classList.add(
+                                'w-full', 'px-5', 'py-4', 'bg-negro-principal',
+                                'border-2', 'border-gris-medio/20', 'rounded-xl',
+                                'text-blanco', 'placeholder-gris-medio/50',
+                                'focus:outline-none', 'focus:border-rojo-intenso',
+                                'focus:shadow-lg', 'focus:shadow-rojo-intenso/20',
+                                'transition-all', 'duration-300', 'font-bold'
+                            );
+                        });
                     });
-                });
-            </script>
+                </script>
+            </div>
         </div>
     </div>
 
