@@ -76,6 +76,37 @@
     .nav-link:hover::before {
         width: 80%;
     }
+
+    /* Dropdown de usuario */
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        margin-top: 0.5rem;
+        min-width: 200px;
+        background: #1C1C1C;
+        border: 1px solid rgba(170, 170, 170, 0.2);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        z-index: 50;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .user-dropdown.active {
+        display: block;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
 
 <!-- Header -->
@@ -114,11 +145,75 @@
 
             <!-- Right Side Buttons -->
             <div class="flex items-center space-x-3">
-                <!-- Login Button -->
-                <a href="{% url 'login' %}" 
-                   class="hidden sm:block bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-2 px-6 rounded-lg uppercase text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 transform">
-                    Login
-                </a>
+                {% if user.is_authenticated %}
+                    <!-- Usuario Logueado - Desktop -->
+                    <div class="hidden sm:block relative">
+                        <button id="user-menu-btn"
+                                class="flex items-center gap-2 bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span class="text-sm">{{ user.get_full_name|default:user.username }}</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="user-dropdown" class="user-dropdown">
+                            <div class="p-4 border-b border-gris-medio/20">
+                                <p class="text-gris-medio text-xs font-medium mb-1">Conectado como</p>
+                                <p class="text-white font-bold">{{ user.get_full_name|default:user.username }}</p>
+                                {% if user.rol %}
+                                    <p class="text-rojo-intenso text-xs font-semibold mt-1 uppercase">{{ user.get_rol_display }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="p-2">
+                                {% if user.rol == 'cajero' %}
+                                    <a href="{% url 'cajero_dashboard' %}" 
+                                       class="flex items-center gap-2 px-4 py-2 text-white hover:bg-gris-oscuro rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                        </svg>
+                                        Mi Dashboard
+                                    </a>
+                                {% elif user.rol == 'cocinero' %}
+                                    <a href="{% url 'cocinero_dashboard' %}" 
+                                       class="flex items-center gap-2 px-4 py-2 text-white hover:bg-gris-oscuro rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                        </svg>
+                                        Mi Dashboard
+                                    </a>
+                                {% elif user.rol == 'admin' %}
+                                    <a href="{% url 'admin_dashboard' %}" 
+                                       class="flex items-center gap-2 px-4 py-2 text-white hover:bg-gris-oscuro rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                        </svg>
+                                        Mi Dashboard
+                                    </a>
+                                {% endif %}
+                                <form action="{% url 'logout' %}" method="POST" class="mt-1">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                            class="w-full flex items-center gap-2 px-4 py-2 text-white hover:bg-rojo-intenso rounded-lg transition-all text-left">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                        Cerrar sesión
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Login Button -->
+                    <a href="{% url 'login' %}" 
+                       class="hidden sm:block bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-2 px-6 rounded-lg uppercase text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 transform">
+                        Login
+                    </a>
+                {% endif %}
 
                 <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn" 
@@ -156,11 +251,48 @@
                    class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
                     Contáctanos
                 </a>
-                <!-- Login button for mobile -->
-                <a href="{% url 'login' %}" 
-                   class="mx-4 mt-2 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md">
-                    Login
-                </a>
+                
+                {% if user.is_authenticated %}
+                    <!-- Usuario Logueado - Mobile -->
+                    <div class="mx-4 mt-2 pt-4 border-t border-gris-medio/20">
+                        <div class="mb-3">
+                            <p class="text-gris-medio text-xs font-medium mb-1">Conectado como</p>
+                            <p class="text-white font-bold">{{ user.get_full_name|default:user.username }}</p>
+                            {% if user.rol %}
+                                <p class="text-rojo-intenso text-xs font-semibold mt-1 uppercase">{{ user.get_rol_display }}</p>
+                            {% endif %}
+                        </div>
+                        {% if user.rol == 'cajero' %}
+                            <a href="{% url 'cajero_dashboard' %}" 
+                               class="block bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md mb-2">
+                                Mi Dashboard
+                            </a>
+                        {% elif user.rol == 'cocinero' %}
+                            <a href="{% url 'cocinero_dashboard' %}" 
+                               class="block bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md mb-2">
+                                Mi Dashboard
+                            </a>
+                        {% elif user.rol == 'admin' %}
+                            <a href="{% url 'admin_dashboard' %}" 
+                               class="block bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md mb-2">
+                                Mi Dashboard
+                            </a>
+                        {% endif %}
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" 
+                                    class="w-full bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md">
+                                Cerrar sesión
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <!-- Login button for mobile -->
+                    <a href="{% url 'login' %}" 
+                       class="mx-4 mt-2 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md">
+                        Login
+                    </a>
+                {% endif %}
             </div>
         </nav>
     </div>
@@ -204,9 +336,27 @@
         });
     }
 
+    // Dropdown de usuario - Desktop
+    const userMenuBtn = document.getElementById('user-menu-btn');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+    }
+
     // Resaltar página activa
     const currentLocation = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a:not([href*="login"])');
+    const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a:not([href*="login"]):not([href*="logout"]):not([href*="dashboard"])');
     
     navLinks.forEach(link => {
         if (link.getAttribute('href') === currentLocation) {

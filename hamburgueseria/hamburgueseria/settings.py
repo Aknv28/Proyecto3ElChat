@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l98%w5e387gz58!tj2pv*t3nba!wh=89%^8#*=29+)ylto==7a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
 
 # Application definition
@@ -57,7 +57,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-             BASE_DIR / 'templates',
+             BASE_DIR / 'usuarios' / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'hamburgueseria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hamburgueseria2',  # El nombre de la base de datos
-        'USER': 'root',     # El nombre de usuario de MySQL
-        'PASSWORD': 'xXgAHHlLELxxKcOlFrnwkJrErDXHFJct',  # La contraseña proporcionada
-        'HOST': 'shuttle.proxy.rlwy.net',  # El host proporcionado
-        'PORT': '16831',    # El puerto proporcionado
+        'NAME': 'bhaqhbluqqj0yoejipij',  # El nombre de la base de datos
+        'USER': 'umlob1duhjkpjhgx',      # El nombre de usuario de MySQL
+        'PASSWORD': 'ORNdfQyjxJvDteHgfRfC',  # La contraseña proporcionada
+        'HOST': 'bhaqhbluqqj0yoejipij-mysql.services.clever-cloud.com',  # El host proporcionado
+        'PORT': '3306',  # El puerto proporcionado
     }
 }
 
@@ -134,3 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'usuarios.usuario'  # Cambia 'sistema' por 'usuarios'
 
 LOGIN_URL = '/usuarios/login/'
+
+
+

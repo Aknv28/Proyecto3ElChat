@@ -3,11 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caja</title>
+    <title>Caja - MAMA GRANDE</title>
+    
+    <!-- Prevenir navegación hacia atrás y cache -->
+    <script>
+        // Prevenir navegación hacia atrás
+        (function() {
+            if (window.history && window.history.pushState) {
+                window.history.pushState('forward', null, window.location.href);
+                
+                window.addEventListener('popstate', function() {
+                    window.history.pushState('forward', null, window.location.href);
+                });
+            }
+        })();
+        
+        // Prevenir cache de la página
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+        
+        // Limpiar historial al cargar
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'negro-principal': '#111111',
+                        'gris-oscuro': '#1C1C1C',
+                        'gris-medio': '#AAAAAA',
+                        'rojo-intenso': '#B51E23',
+                        'rojo-suave': '#D9322A',
+                        'gris-claro': '#E0E0E0',
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -17,48 +62,179 @@
         }
     </style>
 </head>
-<body class="bg-[#111111] min-h-screen">
+<body class="bg-negro-principal min-h-screen">
     <!-- Header -->
-    <header class="bg-[#1C1C1C] border-b border-[#AAAAAA]/20">
+    <header class="bg-gris-oscuro border-b border-gris-medio/20">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-black text-white">Caja</h1>
-                <form action="{% url 'logout' %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="bg-[#B51E23] hover:bg-[#D9322A] text-white font-semibold px-6 py-2.5 rounded-lg transition-all duration-300">
-                        Cerrar sesión
-                    </button>
-                </form>
+                <div>
+                    <h1 class="text-3xl font-black text-white">MAMA GRANDE</h1>
+                    <p class="text-gris-medio text-sm font-medium mt-1">Panel de Caja</p>
+                </div>
+                <button type="button" 
+                        onclick="confirmarCerrarSesion()"
+                        class="bg-rojo-intenso hover:bg-rojo-suave text-white font-bold px-6 py-2.5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-rojo-intenso/30">
+                    🚪 Cerrar sesión
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- Modal de confirmación -->
+    <div id="modal-logout" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
+        <div class="bg-gris-oscuro rounded-2xl p-8 max-w-md w-full mx-4 border border-gris-medio/20">
+            <h3 class="text-2xl font-black text-white mb-4 text-center">¿Cerrar Sesión?</h3>
+            <p class="text-gris-medio text-center mb-6">¿Estás seguro que deseas cerrar tu sesión?</p>
+            <div class="flex gap-4">
+                <button onclick="cancelarCerrarSesion()" 
+                        class="flex-1 bg-gris-medio/20 hover:bg-gris-medio/30 text-white font-bold py-3 rounded-lg transition-all">
+                    Cancelar
+                </button>
+                <form action="{% url 'logout' %}" method="POST" class="flex-1">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="w-full bg-rojo-intenso hover:bg-rojo-suave text-white font-bold py-3 rounded-lg transition-all">
+                        Confirmar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-12">
-        <!-- Stats Section -->
-        <div class="max-w-2xl mx-auto mb-8">
-            <div class="bg-[#1C1C1C] rounded-xl p-8 border border-[#AAAAAA]/10">
-                <div class="flex justify-between items-center mb-4">
-                    <p class="text-[#AAAAAA] font-medium text-lg">Ventas de Hoy</p>
-                    <span class="text-xs bg-[#B51E23]/10 text-[#B51E23] px-3 py-1 rounded-full font-semibold">ACTIVO</span>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Ventas de Hoy -->
+            <div class="bg-gris-oscuro rounded-xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/30 transition-all">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="text-gris-medio font-medium">Ventas de Hoy</p>
+                    <span class="text-xs bg-rojo-intenso/10 text-rojo-intenso px-3 py-1 rounded-full font-bold">ACTIVO</span>
                 </div>
-                <p class="text-5xl font-black text-[#B51E23] mb-3">Bs. 1,250.50</p>
-                <p class="text-[#AAAAAA] font-medium">23 transacciones realizadas</p>
+                <p class="text-4xl font-black text-rojo-intenso mb-2">Bs. {{ ventas_hoy|default:"0.00" }}</p>
+                <p class="text-gris-medio text-sm font-medium">{{ transacciones_hoy|default:0 }} transacciones</p>
+            </div>
+
+            <!-- Pedidos Pendientes -->
+            <div class="bg-gris-oscuro rounded-xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/30 transition-all">
+                <p class="text-gris-medio font-medium mb-3">Pedidos Activos</p>
+                <p class="text-4xl font-black text-white mb-2">{{ pedidos_activos|default:0 }}</p>
+                <p class="text-gris-medio text-sm font-medium">En proceso</p>
+            </div>
+
+            <!-- Promedio de Venta -->
+            <div class="bg-gris-oscuro rounded-xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/30 transition-all">
+                <p class="text-gris-medio font-medium mb-3">Promedio por Venta</p>
+                <p class="text-4xl font-black text-white mb-2">Bs. {{ promedio_venta|default:"0.00" }}</p>
+                <p class="text-gris-medio text-sm font-medium">Ticket promedio</p>
             </div>
         </div>
 
         <!-- Main Action Card -->
-        <div class="max-w-2xl mx-auto">
-            <a href="{% url 'menu' %}" class="block bg-[#B51E23] hover:bg-[#D9322A] rounded-2xl p-12 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-[#B51E23]/30">
+        <div class="max-w-2xl mx-auto mb-8">
+            <a href="{% url 'menu' %}" 
+               class="block bg-rojo-intenso hover:bg-rojo-suave rounded-2xl p-12 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/30">
                 <div class="flex items-center justify-center mb-6">
                     <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
                 </div>
-                <h2 class="text-4xl font-black text-white text-center mb-3">Abrir Caja</h2>
-                <p class="text-white/80 text-center text-lg font-medium">Accede a la caja registradora</p>
+                <h2 class="text-4xl font-black text-white text-center mb-3">NUEVO PEDIDO</h2>
+                <p class="text-white/80 text-center text-lg font-medium">Realizar un nuevo pedido</p>
             </a>
         </div>
+
+        <!-- Información del cajero -->
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-gris-oscuro rounded-xl p-6 border border-gris-medio/10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gris-medio text-sm font-medium mb-1">Cajero activo</p>
+                        <p class="text-white font-bold text-lg">{{ user.get_full_name|default:user.username }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gris-medio text-sm font-medium mb-1">Turno</p>
+                        <p class="text-white font-bold text-lg">{{ turno_actual|default:"Día" }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gris-medio text-sm font-medium mb-1">Estado</p>
+                        <div class="flex items-center justify-end gap-2">
+                            <div class="w-2 h-2 bg-rojo-intenso rounded-full animate-pulse"></div>
+                            <span class="text-white font-bold">Operando</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen Rápido -->
+        <div class="max-w-2xl mx-auto mt-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gris-oscuro rounded-xl p-5 border border-gris-medio/10 text-center">
+                    <p class="text-gris-medio text-sm font-medium mb-2">Pedidos Completados</p>
+                    <p class="text-3xl font-black text-white">{{ pedidos_completados_hoy|default:0 }}</p>
+                </div>
+                <div class="bg-gris-oscuro rounded-xl p-5 border border-gris-medio/10 text-center">
+                    <p class="text-gris-medio text-sm font-medium mb-2">Último Pedido</p>
+                    <p class="text-3xl font-black text-white">{{ tiempo_ultimo_pedido|default:"--:--" }}</p>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <script>
+        function confirmarCerrarSesion() {
+            const modal = document.getElementById('modal-logout');
+            modal.classList.remove('hidden');
+            modal.style.animation = 'fadeIn 0.3s ease-in-out';
+        }
+
+        function cancelarCerrarSesion() {
+            const modal = document.getElementById('modal-logout');
+            modal.classList.add('hidden');
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                cancelarCerrarSesion();
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modal-logout').addEventListener('click', function(event) {
+            if (event.target === this) {
+                cancelarCerrarSesion();
+            }
+        });
+
+        // Prevenir que se guarde el estado en el historial
+        window.addEventListener('beforeunload', function() {
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        });
+
+        // Actualizar hora cada segundo (para reloj en tiempo real si lo deseas)
+        function actualizarHora() {
+            const ahora = new Date();
+            const hora = ahora.getHours().toString().padStart(2, '0');
+            const minutos = ahora.getMinutes().toString().padStart(2, '0');
+            const horaActual = `${hora}:${minutos}`;
+            
+            // Puedes usar esto para mostrar la hora actual si lo necesitas
+            // document.getElementById('hora-actual').textContent = horaActual;
+        }
+        
+        setInterval(actualizarHora, 1000);
+        actualizarHora();
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </body>
 </html>

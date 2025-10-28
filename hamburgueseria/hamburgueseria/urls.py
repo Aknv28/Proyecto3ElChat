@@ -1,25 +1,30 @@
+# hamburgueseria/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
-from django.contrib.auth import views as auth_views
-
-# Redirigir la raíz al index
-def redirect_to_index(request):
-    return redirect('index')
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # URL para el panel de administración
     path('admin/', admin.site.urls),
     
-    # Rutas de la app 'usuarios'
-    path('usuarios/', include('usuarios.urls')),  # Asegúrate de que este archivo 'usuarios/urls.py' tenga las rutas correctas para las vistas de usuarios
-    
-    # Redirigir la raíz al index
-    path('', redirect_to_index),  # Redirige la raíz al index
-    
-    # Vista de login
-    path('usuarios/login/', auth_views.LoginView.as_view(), name='login'),
-    
-    # Logout, redirigiendo después de cerrar sesión
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    # Rutas de la app 'usuarios' (incluye index, login, dashboards, etc.)
+    path('', include('usuarios.urls')),
 ]
+
+# ============================================
+# CONFIGURACIÓN DE PÁGINAS DE ERROR
+# ============================================
+handler404 = 'usuarios.views.error_404'
+handler500 = 'usuarios.views.error_500'
+handler403 = 'usuarios.views.error_403'
+
+# ============================================
+# CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
+# Solo para desarrollo (DEBUG = True)
+# ============================================
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    if hasattr(settings, 'MEDIA_URL') and hasattr(settings, 'MEDIA_ROOT'):
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,37 @@
 <div class="min-h-screen bg-negro-principal text-white">
+    <!-- Modal de Confirmación -->
+    <div id="modal-confirmacion" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+        <div class="bg-gris-oscuro rounded-2xl p-12 max-w-md w-full mx-4 text-center">
+            <!-- Círculo con check -->
+            <div class="mx-auto mb-6 w-32 h-32 relative">
+                <svg class="w-full h-full" viewBox="0 0 100 100">
+                    <!-- Círculo de fondo -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#1C1C1C" stroke-width="3"/>
+                    <!-- Círculo animado -->
+                    <circle id="circle-progress" cx="50" cy="50" r="45" fill="none" 
+                            stroke="#B51E23" stroke-width="3" 
+                            stroke-dasharray="283" stroke-dashoffset="283"
+                            transform="rotate(-90 50 50)"
+                            style="transition: stroke-dashoffset 0.6s ease-out;"/>
+                    <!-- Check mark -->
+                    <path id="check-mark" d="M 30 50 L 45 65 L 70 35" 
+                          fill="none" stroke="#B51E23" stroke-width="5" 
+                          stroke-linecap="round" stroke-linejoin="round"
+                          stroke-dasharray="70" stroke-dashoffset="70"
+                          style="transition: stroke-dashoffset 0.4s ease-out;"/>
+                </svg>
+            </div>
+            
+            <h2 class="font-display font-black text-3xl text-rojo-intenso mb-4">¡PEDIDO ENVIADO!</h2>
+            <p class="text-xl text-white mb-2">En preparación</p>
+            <div id="loader" class="mt-4 flex justify-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-rojo-intenso"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
-    <header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-50">
+    <header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-40">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 class="font-display font-black text-3xl text-center text-rojo-intenso">RESUMEN DEL PEDIDO</h1>
             <p class="text-white text-center mt-2 font-medium">Verificar antes de enviar a cocina</p>
@@ -9,6 +40,22 @@
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Tipo de Servicio -->
+        <div class="bg-gris-oscuro rounded-lg p-6 mb-8">
+            <div class="flex items-center justify-center gap-4">
+                <span class="font-display font-bold text-xl text-gris-medio">TIPO DE SERVICIO:</span>
+                <div class="flex items-center gap-3 bg-negro-principal px-6 py-3 rounded-lg">
+                    {% if tipo == 'local' %}
+                        <span class="text-3xl">🍽️</span>
+                        <span class="font-display font-bold text-2xl text-rojo-intenso">COMER EN EL LOCAL</span>
+                    {% else %}
+                        <span class="text-3xl">🥡</span>
+                        <span class="font-display font-bold text-2xl text-rojo-intenso">PARA LLEVAR</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
         <!-- Tabla de productos -->
         <div class="bg-gris-oscuro rounded-lg overflow-hidden mb-8">
             <table class="w-full">
@@ -42,26 +89,24 @@
         </div>
 
         <!-- Botones de acción -->
-        <form method="POST">
+        <form method="POST" id="form-pedido">
             {% csrf_token %}
             <div class="flex flex-col sm:flex-row gap-4">
                 <button type="submit" 
                         name="action" 
                         value="editar"
                         class="flex-1 px-6 py-4 bg-gris-oscuro hover:bg-opacity-80 text-white font-display font-bold text-lg rounded-lg transition-all">
-                    EDITAR ORDEN
+                     EDITAR ORDEN
                 </button>
-                <button type="submit" 
-                        name="action" 
-                        value="cancelar"
+                <button type="button"
+                        id="btn-cancelar"
                         class="flex-1 px-6 py-4 bg-rojo-suave hover:bg-opacity-80 text-white font-display font-bold text-lg rounded-lg transition-all">
-                    CANCELAR ORDEN
+                     CANCELAR ORDEN
                 </button>
-                <button type="submit" 
-                        name="action" 
-                        value="mandar_a_cocina"
+                <button type="button"
+                        id="btn-enviar-cocina"
                         class="flex-1 px-6 py-4 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-lg rounded-lg transition-all shadow-lg">
-                    ENVIAR A COCINA
+                     ENVIAR A COCINA
                 </button>
             </div>
         </form>
@@ -71,14 +116,158 @@
 <style>
     body { font-family: 'Inter', sans-serif; }
     .font-display { font-family: 'Montserrat', sans-serif; }
+
+    /* Animación del modal */
+    #modal-confirmacion:not(.hidden) {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    #modal-confirmacion:not(.hidden) > div {
+        animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Animación de escala del check */
+    @keyframes scaleCheck {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .check-animated {
+        animation: scaleCheck 0.3s ease-out;
+    }
 </style>
+
 <script>
-    document.querySelector('button[value="cancelar"]').addEventListener('click', function(e) {
-        if (!confirm('¿Estás seguro de cancelar este pedido?')) {
-            e.preventDefault();
+    document.getElementById('btn-cancelar').addEventListener('click', function(e) {
+        if (confirm('¿Estás seguro de cancelar este pedido?')) {
+            const form = document.getElementById('form-pedido');
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'action';
+            input.value = 'cancelar';
+            form.appendChild(input);
+            form.submit();
         }
     });
+
+    // Manejar el envío a cocina
+    document.getElementById('btn-enviar-cocina').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const modal = document.getElementById('modal-confirmacion');
+        const form = document.getElementById('form-pedido');
+        const loader = document.getElementById('loader');
+        const circleProgress = document.getElementById('circle-progress');
+        const checkMark = document.getElementById('check-mark');
+        const btnEnviar = this;
+        
+        // Deshabilitar el botón para evitar múltiples clics
+        btnEnviar.disabled = true;
+        btnEnviar.style.opacity = '0.5';
+        btnEnviar.style.cursor = 'not-allowed';
+        
+        // Crear FormData
+        const formData = new FormData(form);
+        formData.append('action', 'mandar_a_cocina');
+        
+        // Obtener el token CSRF
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // Enviar la solicitud
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (response.redirected) {
+                // Si Django redirige, seguir la redirección después de mostrar el modal
+                modal.classList.remove('hidden');
+                
+                // Animar el círculo
+                setTimeout(() => {
+                    circleProgress.style.strokeDashoffset = '0';
+                }, 100);
+                
+                // Animar el check después del círculo
+                setTimeout(() => {
+                    checkMark.style.strokeDashoffset = '0';
+                    checkMark.classList.add('check-animated');
+                    loader.style.display = 'none';
+                }, 700);
+                
+                // Redirigir después de mostrar la animación completa
+                setTimeout(() => {
+                    window.location.href = response.url;
+                }, 2000);
+                
+                return;
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            if (data && data.success) {
+                // Mostrar modal
+                modal.classList.remove('hidden');
+                
+                // Animar el círculo
+                setTimeout(() => {
+                    circleProgress.style.strokeDashoffset = '0';
+                }, 100);
+                
+                // Animar el check después del círculo
+                setTimeout(() => {
+                    checkMark.style.strokeDashoffset = '0';
+                    checkMark.classList.add('check-animated');
+                    loader.style.display = 'none';
+                }, 700);
+                
+                // Redirigir después de mostrar la animación completa
+                setTimeout(() => {
+                    window.location.href = "{% url 'menu' %}";
+                }, 2000);
+            } else if (data && !data.success) {
+                alert('Error al procesar el pedido: ' + (data.error || 'Error desconocido'));
+                btnEnviar.disabled = false;
+                btnEnviar.style.opacity = '1';
+                btnEnviar.style.cursor = 'pointer';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al enviar el pedido. Por favor, intenta de nuevo.');
+            btnEnviar.disabled = false;
+            btnEnviar.style.opacity = '1';
+            btnEnviar.style.cursor = 'pointer';
+        });
+    });
 </script>
+
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>

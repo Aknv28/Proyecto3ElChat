@@ -60,7 +60,7 @@
                 </div>
 
                 <!-- Formulario Django -->
-                <form method="POST" class="space-y-6">
+                <form method="POST" id="login-form" class="space-y-6">
                     {% csrf_token %}
 
                     <!-- Campo Usuario -->
@@ -69,8 +69,9 @@
                             Usuario
                         </label>
                         {{ form.username }}
+                        <div id="username-error" class="text-rojo-intenso text-sm mt-2 hidden"></div>
                         {% for error in form.username.errors %}
-                            <div class="text-rojo-intenso text-sm mt-1">{{ error }}</div>
+                            <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
                         {% endfor %}
                     </div>
 
@@ -80,33 +81,28 @@
                             Contraseña
                         </label>
                         {{ form.password }}
+                        <div id="password-error" class="text-rojo-intenso text-sm mt-2 hidden"></div>
                         {% for error in form.password.errors %}
-                            <div class="text-rojo-intenso text-sm mt-1">{{ error }}</div>
+                            <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
                         {% endfor %}
                     </div>
 
                     <!-- Botón -->
                     <button 
                         type="submit"
+                        id="submit-btn"
                         class="w-full bg-gradient-to-r from-rojo-intenso to-rojo-suave hover:from-rojo-suave hover:to-rojo-intenso text-blanco font-black py-5 px-6 rounded-xl uppercase tracking-widest text-base transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-rojo-intenso/40 active:scale-[0.98] mt-8"
                     >
                         INGRESAR
                     </button>
 
-                    <!-- Errores generales -->
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
+                    <!-- Mostrar solo errores no relacionados con fields -->
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="text-rojo-intenso text-sm mt-4 text-center bg-rojo-intenso/10 p-3 rounded-lg border border-rojo-intenso/30">
+                                {{ error }}
+                            </div>
                         {% endfor %}
-                    {% endfor %}
-
-                    <!-- Mensajes -->
-                    {% if messages %}
-                        <ul class="mt-4">
-                            {% for message in messages %}
-                                <li class="text-center text-gris-claro text-sm mt-2">{{ message }}</li>
-                            {% endfor %}
-                        </ul>
                     {% endif %}
                 </form>
 
@@ -114,7 +110,7 @@
                 <script>
                     // Añadir clases de Tailwind a los campos generados por Django automáticamente
                     document.addEventListener('DOMContentLoaded', () => {
-                        const inputs = document.querySelectorAll('input');
+                        const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
                         inputs.forEach(input => {
                             input.classList.add(
                                 'w-full', 'px-5', 'py-4', 'bg-negro-principal',
@@ -124,6 +120,98 @@
                                 'focus:shadow-lg', 'focus:shadow-rojo-intenso/20',
                                 'transition-all', 'duration-300', 'font-bold'
                             );
+                        });
+
+                        // Añadir atributos de validación
+                        const usernameInput = document.getElementById('id_username');
+                        const passwordInput = document.getElementById('id_password');
+                        
+                        if (usernameInput) {
+                            usernameInput.setAttribute('minlength', '4');
+                            usernameInput.setAttribute('maxlength', '20');
+                            usernameInput.setAttribute('autocomplete', 'username');
+                        }
+                        
+                        if (passwordInput) {
+                            passwordInput.setAttribute('minlength', '8');
+                            passwordInput.setAttribute('maxlength', '20');
+                            passwordInput.setAttribute('autocomplete', 'current-password');
+                        }
+
+                        // Validación en tiempo real
+                        const usernameError = document.getElementById('username-error');
+                        const passwordError = document.getElementById('password-error');
+
+                        if (usernameInput) {
+                            usernameInput.addEventListener('input', function() {
+                                const value = this.value;
+                                if (value.length > 0 && value.length < 4) {
+                                    usernameError.textContent = '⚠️ El usuario debe tener al menos 4 caracteres';
+                                    usernameError.classList.remove('hidden');
+                                } else if (value.length > 20) {
+                                    usernameError.textContent = '⚠️ El usuario no puede exceder 20 caracteres';
+                                    usernameError.classList.remove('hidden');
+                                } else {
+                                    usernameError.classList.add('hidden');
+                                }
+                            });
+                        }
+
+                        if (passwordInput) {
+                            passwordInput.addEventListener('input', function() {
+                                const value = this.value;
+                                if (value.length > 0 && value.length < 8) {
+                                    passwordError.textContent = '⚠️ La contraseña debe tener al menos 8 caracteres';
+                                    passwordError.classList.remove('hidden');
+                                } else if (value.length > 20) {
+                                    passwordError.textContent = '⚠️ La contraseña no puede exceder 20 caracteres';
+                                    passwordError.classList.remove('hidden');
+                                } else {
+                                    passwordError.classList.add('hidden');
+                                }
+                            });
+                        }
+
+                        // Validación en el submit
+                        const form = document.getElementById('login-form');
+                        form.addEventListener('submit', function(e) {
+                            let isValid = true;
+
+                            // Validar usuario
+                            if (usernameInput) {
+                                const username = usernameInput.value.trim();
+                                if (username.length < 4) {
+                                    e.preventDefault();
+                                    usernameError.textContent = '⚠️ El usuario debe tener al menos 4 caracteres';
+                                    usernameError.classList.remove('hidden');
+                                    isValid = false;
+                                } else if (username.length > 20) {
+                                    e.preventDefault();
+                                    usernameError.textContent = '⚠️ El usuario no puede exceder 20 caracteres';
+                                    usernameError.classList.remove('hidden');
+                                    isValid = false;
+                                }
+                            }
+
+                            // Validar contraseña
+                            if (passwordInput) {
+                                const password = passwordInput.value;
+                                if (password.length < 8) {
+                                    e.preventDefault();
+                                    passwordError.textContent = '⚠️ La contraseña debe tener al menos 8 caracteres';
+                                    passwordError.classList.remove('hidden');
+                                    isValid = false;
+                                } else if (password.length > 20) {
+                                    e.preventDefault();
+                                    passwordError.textContent = '⚠️ La contraseña no puede exceder 20 caracteres';
+                                    passwordError.classList.remove('hidden');
+                                    isValid = false;
+                                }
+                            }
+
+                            if (!isValid) {
+                                return false;
+                            }
                         });
                     });
                 </script>

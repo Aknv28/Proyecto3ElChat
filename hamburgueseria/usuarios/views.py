@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from django.contrib.auth import logout
 
 from sistema.models import Producto, Categoria
 import uuid
@@ -10,11 +11,44 @@ from sistema.models import Producto, Categoria, Pedido, PedidoDetalle
 from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 # Vista de login
+@never_cache
 def login_view(request):
+    # Si el usuario ya está autenticado, redirigir según su rol
+    if request.user.is_authenticated:
+        if request.user.rol == 'admin':
+            return redirect('admin_dashboard')
+        elif request.user.rol == 'cocinero':
+            return redirect('cocinero_dashboard')
+        elif request.user.rol == 'cajero':
+            return redirect('cajero_dashboard')
+    
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
+        
+        # Validaciones adicionales del lado del servidor
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+        
+        # Validar longitud de usuario
+        if len(username) < 4:
+            messages.error(request, 'El usuario debe tener al menos 4 caracteres.')
+            return render(request, 'usuarios/login.html', {'form': form})
+        
+        if len(username) > 20:
+            messages.error(request, 'El usuario no puede exceder 20 caracteres.')
+            return render(request, 'usuarios/login.html', {'form': form})
+        
+        # Validar longitud de contraseña
+        if len(password) < 8:
+            messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
+            return render(request, 'usuarios/login.html', {'form': form})
+        
+        if len(password) > 20:
+            messages.error(request, 'La contraseña no puede exceder 20 caracteres.')
+            return render(request, 'usuarios/login.html', {'form': form})
         
         if form.is_valid():
             # Autenticación del usuario
@@ -36,31 +70,62 @@ def login_view(request):
                     return redirect('cajero_dashboard')
                 else:
                     messages.error(request, 'No tienes permisos para acceder.')
-                    return redirect('login')  # Redirige a login si no tiene rol válido
+                    return redirect('login')
             else:
                 messages.error(request, 'Credenciales incorrectas. Verifica tu usuario y contraseña.')
-
         else:
             messages.error(request, 'Credenciales incorrectas. Verifica tu usuario y contraseña.')
-
     else:
         form = AuthenticationForm()
 
     return render(request, 'usuarios/login.html', {'form': form})
 
+
 # Vista para el dashboard del Admin
 @login_required
+@never_cache
 def admin_dashboard(request):
+    # Verificar que el usuario es admin
+    if request.user.rol != 'admin':
+        messages.error(request, 'No tienes permisos para acceder a esta página.')
+        return redirect('login')
+    
+    # Limpiar mensajes anteriores que no deberían estar aquí
+    storage = messages.get_messages(request)
+    storage.used = True
+    
     return render(request, 'admin_dashboard.html')
+
 
 # Vista para el dashboard del Cocinero
 @login_required
+@never_cache
 def cocinero_dashboard(request):
+    # Verificar que el usuario es cocinero
+    if request.user.rol != 'cocinero':
+        messages.error(request, 'No tienes permisos para acceder a esta página.')
+        return redirect('login')
+    
+    # Limpiar mensajes anteriores que no deberían estar aquí
+    storage = messages.get_messages(request)
+    storage.used = True
+    
     return render(request, 'cocinero_dashboard.html')
+
 
 # Vista para el dashboard del Cajero
 @login_required
+@never_cache
 def cajero_dashboard(request):
+    # Verificar que el usuario es cajero
+    if request.user.rol != 'cajero':
+        messages.error(request, 'No tienes permisos para acceder a esta página.')
+        return redirect('login')
+    
+    # Limpiar mensajes anteriores que no deberían estar aquí
+    storage = messages.get_messages(request)
+    storage.used = True
+    
     return render(request, 'cajero_dashboard.html')
 
 @login_required
@@ -106,6 +171,8 @@ def menu_view(request):
         'tipo_guardado': tipo_guardado
     })
 
+from django.http import JsonResponse
+
 @login_required
 def confirmar_pedido(request):
     pedido_sesion = request.session.get('pedido', [])
@@ -131,32 +198,56 @@ def confirmar_pedido(request):
             return redirect('menu')
 
         elif action == 'mandar_a_cocina':
-            cajero_actual = request.user
+            try:
+                cajero_actual = request.user
 
-            pedido = Pedido.objects.create(
-                cajero=cajero_actual,
-                tipo=tipo,
-                total_monetario=total,
-                estado_actual='en_cocina'
-            )
-
-            for item in pedido_sesion:
-                producto = Producto.objects.get(id=item['id'])
-                PedidoDetalle.objects.create(
-                    pedido=pedido,
-                    producto=producto,
-                    cantidad=item['cantidad'],
-                    precio_unitario=item['precio'],
-                    subtotal=item['subtotal']
+                # Crear el pedido en la base de datos
+                pedido = Pedido.objects.create(
+                    cajero=cajero_actual,
+                    tipo=tipo,
+                    total_monetario=total,
+                    estado_actual='en_cocina'
                 )
 
-            # Limpiar sesión
-            request.session.pop('pedido', None)
-            request.session.pop('total', None)
-            request.session.pop('tipo', None)
+                # Crear los detalles del pedido
+                for item in pedido_sesion:
+                    producto = Producto.objects.get(id=item['id'])
+                    PedidoDetalle.objects.create(
+                        pedido=pedido,
+                        producto=producto,
+                        cantidad=item['cantidad'],
+                        precio_unitario=item['precio'],
+                        subtotal=item['subtotal']
+                    )
 
-            messages.success(request, f"Pedido #{pedido.numero_pedido} enviado a cocina.")
-            return redirect('menu')
+                # Limpiar sesión
+                request.session.pop('pedido', None)
+                request.session.pop('total', None)
+                request.session.pop('tipo', None)
+
+                # Mensaje de éxito
+                messages.success(request, f"Pedido #{pedido.numero_pedido} enviado a cocina exitosamente.")
+                
+                # Si es una petición AJAX, devolver JSON
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'numero_pedido': pedido.numero_pedido
+                    })
+                
+                return redirect('menu')
+                
+            except Exception as e:
+                messages.error(request, f"Error al procesar el pedido: {str(e)}")
+                
+                # Si es una petición AJAX, devolver error
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False,
+                        'error': str(e)
+                    }, status=500)
+                
+                return redirect('confirmar_pedido')
 
     return render(request, 'usuarios/confirmar_pedido.html', {
         'pedido': pedido_sesion,
@@ -195,3 +286,68 @@ def servicios(request):
 
 def contactanos(request):
     return render(request, 'usuarios/contactanos.html')
+
+
+
+
+@never_cache
+def logout_view(request):
+    """Vista para cerrar sesión"""
+    if request.method == 'POST':
+        logout(request)
+        messages.success(request, 'Has cerrado sesión correctamente.')
+        
+        # Crear respuesta de redirección
+        response = redirect('login')
+        
+        # Agregar headers para prevenir cache
+        response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+        response['Pragma'] = 'no-cache'
+        response['Expires'] = '0'
+        
+        return response
+    
+    # Si no es POST, redirigir al login
+    return redirect('login')
+
+
+
+
+
+# usuarios/views.py
+
+# ... tu código existente ...
+
+# ============================================
+# VISTAS DE PÁGINAS DE ERROR
+# ============================================
+
+def error_404(request, exception):
+    """Vista personalizada para error 404 - Página no encontrada"""
+    return render(request, '404.html', status=404)
+
+def error_500(request):
+    """Vista personalizada para error 500 - Error del servidor"""
+    return render(request, '500.html', status=500)
+
+def error_403(request, exception):
+    """Vista personalizada para error 403 - Acceso denegado"""
+    return render(request, '403.html', status=403)
+
+
+# ============================================
+# VISTAS DE PRUEBA (Solo para desarrollo)
+# Eliminar estas vistas cuando subas a producción
+# ============================================
+
+def test_404(request):
+    """Vista para probar la página 404"""
+    return render(request, '404.html', status=404)
+
+def test_500(request):
+    """Vista para probar la página 500"""
+    return render(request, '500.html', status=500)
+
+def test_403(request):
+    """Vista para probar la página 403"""
+    return render(request, '403.html', status=403)

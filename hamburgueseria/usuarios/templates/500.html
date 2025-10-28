@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Error del Servidor | MAMA GRANDE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'negro-principal': '#111111',
+                        'gris-oscuro': '#1C1C1C',
+                        'gris-medio': '#AAAAAA',
+                        'rojo-intenso': '#B51E23',
+                        'rojo-suave': '#D9322A',
+                        'gris-claro': '#E0E0E0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-negro-principal min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center fade-in-up">
+            <!-- Ícono de error -->
+            <div class="mb-8 pulse-glow">
+                <svg class="w-48 h-48 mx-auto text-rojo-intenso" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+
+            <!-- Código de error -->
+            <div class="mb-6">
+                <h1 class="font-display font-black text-8xl md:text-9xl text-rojo-intenso mb-2">500</h1>
+                <div class="h-1 w-32 bg-rojo-intenso mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Mensaje principal -->
+            <h2 class="font-display font-black text-3xl md:text-4xl text-white mb-4">
+                ¡UPS! ALGO SALIÓ MAL
+            </h2>
+            
+            <p class="text-gris-medio text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                Nuestros servidores están teniendo problemas temporales. Estamos trabajando para solucionarlo lo antes posible.
+            </p>
+
+            <!-- Información adicional -->
+            <div class="bg-gris-oscuro rounded-2xl p-6 mb-8 max-w-xl mx-auto border border-gris-medio/20">
+                <p class="text-gris-claro text-sm mb-2">
+                    <span class="font-bold text-rojo-intenso">¿Qué puedes hacer?</span>
+                </p>
+                <ul class="text-gris-medio text-sm space-y-2 text-left">
+                    <li class="flex items-start gap-2">
+                        <span class="text-rojo-intenso mt-1">•</span>
+                        <span>Espera unos minutos e intenta nuevamente</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-rojo-intenso mt-1">•</span>
+                        <span>Recarga la página</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-rojo-intenso mt-1">•</span>
+                        <span>Vuelve al inicio y navega desde allí</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/" 
+                   class="w-full sm:w-auto bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-4 px-8 rounded-xl uppercase text-base transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/40">
+                    🏠 Volver al Inicio
+                </a>
+                <button onclick="location.reload()" 
+                        class="w-full sm:w-auto bg-gris-oscuro hover:bg-gris-medio/20 text-white font-display font-bold py-4 px-8 rounded-xl uppercase text-base transition-all duration-300 border-2 border-gris-medio/30 hover:border-rojo-intenso">
+                    🔄 Recargar Página
+                </button>
+            </div>
+
+            <!-- Footer con branding -->
+            <div class="mt-12 pt-8 border-t border-gris-medio/20">
+                <h3 class="font-display font-black text-2xl text-rojo-intenso mb-2">MAMA GRANDE</h3>
+                <p class="text-gris-medio text-sm">Lamentamos las molestias</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

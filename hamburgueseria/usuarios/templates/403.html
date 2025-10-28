@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Acceso Denegado | MAMA GRANDE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'negro-principal': '#111111',
+                        'gris-oscuro': '#1C1C1C',
+                        'gris-medio': '#AAAAAA',
+                        'rojo-intenso': '#B51E23',
+                        'rojo-suave': '#D9322A',
+                        'gris-claro': '#E0E0E0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-display {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-negro-principal min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center fade-in-up">
+            <!-- Ícono de candado -->
+            <div class="mb-8 shake-animation">
+                <svg class="w-48 h-48 mx-auto text-rojo-intenso" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            </div>
+
+            <!-- Código de error -->
+            <div class="mb-6">
+                <h1 class="font-display font-black text-8xl md:text-9xl text-rojo-intenso mb-2">403</h1>
+                <div class="h-1 w-32 bg-rojo-intenso mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Mensaje principal -->
+            <h2 class="font-display font-black text-3xl md:text-4xl text-white mb-4">
+                ACCESO DENEGADO
+            </h2>
+            
+            <p class="text-gris-medio text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                No tienes los permisos necesarios para acceder a esta página. Si crees que esto es un error, contacta al administrador.
+            </p>
+
+            <!-- Información adicional -->
+            <div class="bg-gris-oscuro rounded-2xl p-6 mb-8 max-w-xl mx-auto border border-gris-medio/20">
+                <p class="text-gris-claro text-sm mb-2">
+                    <span class="font-bold text-rojo-intenso">Posibles razones:</span>
+                </p>
+                <ul class="text-gris-medio text-sm space-y-2 text-left">
+                    <li class="flex items-start gap-2">
+                        <span class="text-rojo-intenso mt-1">•</span>
+                        <span>No has iniciado sesión</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-rojo-intenso mt-1">•</span>
+                        <span>Tu cuenta no tiene permisos suficientes</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-rojo-intenso mt-1">•</span>
+                        <span>Estás intentando acceder a un área restringida</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/" 
+                   class="w-full sm:w-auto bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-4 px-8 rounded-xl uppercase text-base transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/40">
+                    🏠 Volver al Inicio
+                </a>
+                <a href="/login/" 
+                   class="w-full sm:w-auto bg-gris-oscuro hover:bg-gris-medio/20 text-white font-display font-bold py-4 px-8 rounded-xl uppercase text-base transition-all duration-300 border-2 border-gris-medio/30 hover:border-rojo-intenso">
+                    🔐 Iniciar Sesión
+                </a>
+            </div>
+
+            <!-- Footer con branding -->
+            <div class="mt-12 pt-8 border-t border-gris-medio/20">
+                <h3 class="font-display font-black text-2xl text-rojo-intenso mb-2">MAMA GRANDE</h3>
+                <p class="text-gris-medio text-sm">Área de acceso restringido</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

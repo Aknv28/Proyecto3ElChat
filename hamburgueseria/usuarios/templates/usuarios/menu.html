@@ -9,7 +9,7 @@
                         <h1 class="font-display font-black text-3xl sm:text-4xl tracking-tight">MAMA GRANDE</h1>
                         <p class="text-gris-medio mt-2 font-medium">Realiza tu pedido</p>
                     </div>
-                    <a href="javascript:history.back()" 
+                    <a href="{% url 'cajero_dashboard' %}" 
                        class="bg-gris-oscuro border-2 border-rojo-intenso hover:bg-rojo-intenso text-white font-display font-black py-2 px-6 rounded-xl uppercase text-sm transition-all duration-300">
                         ⬅ Volver
                     </a>
@@ -44,24 +44,25 @@
                     <h2 class="font-display font-bold text-2xl mb-6 categoria-titulo">{{ categoria|upper }}</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {% for producto in productos_categoria %}
-                            <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all producto-item" 
+                            <div class="bg-gris-oscuro rounded-lg p-5 hover:bg-opacity-80 transition-all producto-item flex flex-col" 
                                  data-nombre="{{ producto.nombre|lower }}" 
-                                 data-descripcion="{{ producto.descripcion|lower }}">
+                                 data-descripcion="{{ producto.descripcion|lower }}"
+                                 data-categoria="{{ categoria|lower }}">
                                 <div class="image-overlay">
                                     <img src="{{ producto.imagen_url }}" 
                                          alt="{{ producto.nombre }}" 
                                          class="product-image w-full h-[180px] object-cover rounded-lg">
                                 </div>
-                                <div class="flex justify-between items-start mb-4 mt-4">
-                                    <div>
+                                <div class="flex justify-between items-start mb-4 mt-4 flex-grow">
+                                    <div class="flex-1 min-h-[60px]">
                                         <h3 class="font-display font-bold text-xl">{{ producto.nombre|upper }}</h3>
                                         {% if producto.descripcion %}
-                                            <p class="text-gris-medio text-sm">{{ producto.descripcion }}</p>
+                                            <p class="text-gris-medio text-sm mt-1">{{ producto.descripcion }}</p>
                                         {% endif %}
                                     </div>
-                                    <span class="font-display font-bold text-xl text-rojo-intenso">{{ producto.precio }} Bs</span>
+                                    <span class="font-display font-bold text-xl text-rojo-intenso ml-4 whitespace-nowrap">{{ producto.precio }} Bs</span>
                                 </div>
-                                <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2">
+                                <div class="flex items-center justify-between bg-negro-principal rounded-lg p-2 mt-auto">
                                     <button type="button" 
                                             onclick="decrementQuantity('producto_{{ producto.id }}')" 
                                             class="w-10 h-10 rounded-lg bg-gris-oscuro hover:bg-rojo-intenso transition-colors font-bold text-lg">
@@ -73,7 +74,7 @@
                                            min="0"
                                            max="20"
                                            value="{% for item in pedido_guardado %}{% if item.id == producto.id %}{{ item.cantidad }}{% endif %}{% empty %}0{% endfor %}" 
-                                            class="font-bold text-lg min-w-[2rem] text-center bg-transparent border-0 outline-none"
+                                           class="font-bold text-lg w-12 text-center bg-transparent border-0 outline-none"
                                            readonly>
                                     <button type="button" 
                                             onclick="incrementQuantity('producto_{{ producto.id }}')" 
@@ -131,20 +132,79 @@
     }
     .producto-item.oculto { display: none; }
     .categoria-section.oculto { display: none; }
+    .producto-item.bloqueado {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 </style>
 
 <script>
+    // Categorías que requieren hamburguesa
+    const categoriasRestringidas = ['refrescos', 'salsas', 'bebidas', 'extras'];
+
+    function verificarHamburguesaSeleccionada() {
+        const productos = document.querySelectorAll('.producto-item');
+        let hayHamburguesa = false;
+
+        productos.forEach(producto => {
+            const categoria = producto.dataset.categoria.toLowerCase();
+            const input = producto.querySelector('input[type="number"]');
+            const cantidad = parseInt(input.value || 0);
+
+            // Verificar si hay hamburguesas seleccionadas
+            if (categoria === 'hamburguesas' && cantidad > 0) {
+                hayHamburguesa = true;
+            }
+        });
+
+        return hayHamburguesa;
+    }
+
+    function actualizarEstadoProductos() {
+        const hayHamburguesa = verificarHamburguesaSeleccionada();
+        const productos = document.querySelectorAll('.producto-item');
+
+        productos.forEach(producto => {
+            const categoria = producto.dataset.categoria.toLowerCase();
+            
+            if (categoriasRestringidas.includes(categoria)) {
+                if (!hayHamburguesa) {
+                    producto.classList.add('bloqueado');
+                    const input = producto.querySelector('input[type="number"]');
+                    if (parseInt(input.value || 0) > 0) {
+                        input.value = 0;
+                    }
+                } else {
+                    producto.classList.remove('bloqueado');
+                }
+            }
+        });
+    }
+
     function incrementQuantity(inputId) {
         const input = document.getElementById(inputId);
+        const producto = input.closest('.producto-item');
+        const categoria = producto.dataset.categoria.toLowerCase();
+
+        // Verificar si es una categoría restringida
+        if (categoriasRestringidas.includes(categoria)) {
+            if (!verificarHamburguesaSeleccionada()) {
+                alert('⚠️ Debes seleccionar al menos una hamburguesa antes de agregar ' + categoria);
+                return;
+            }
+        }
+
         const valorActual = parseInt(input.value || 0);
         if (valorActual < 20) {
             input.value = valorActual + 1;
+            actualizarEstadoProductos();
         }
     }
 
     function decrementQuantity(inputId) {
         const input = document.getElementById(inputId);
         input.value = Math.max(0, parseInt(input.value || 0) - 1);
+        actualizarEstadoProductos();
     }
 
     // Función de validación y búsqueda
@@ -223,6 +283,11 @@
             sinResultados.classList.add('hidden');
         }
     }
+
+    // Inicializar estado de productos al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        actualizarEstadoProductos();
+    });
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -255,6 +320,25 @@ document.querySelector('form').addEventListener('submit', function(e) {
     if (totalSeleccionado === 0) {
         e.preventDefault();
         alert("Debes seleccionar al menos un producto para continuar.");
+        return;
+    }
+
+    // Validar que no haya refrescos o salsas sin hamburguesa
+    const hayHamburguesa = verificarHamburguesaSeleccionada();
+    if (!hayHamburguesa) {
+        let hayRestringidos = false;
+        productos.forEach(function(input) {
+            const producto = input.closest('.producto-item');
+            const categoria = producto.dataset.categoria.toLowerCase();
+            if (categoriasRestringidas.includes(categoria) && parseInt(input.value || 0) > 0) {
+                hayRestringidos = true;
+            }
+        });
+
+        if (hayRestringidos) {
+            e.preventDefault();
+            alert("⚠️ No puedes seleccionar refrescos o salsas sin una hamburguesa.");
+        }
     }
 });
 </script>
