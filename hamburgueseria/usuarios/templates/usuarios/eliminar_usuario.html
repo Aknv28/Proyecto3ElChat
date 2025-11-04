@@ -1,0 +1,330 @@
+{% block content %}
+<div class="min-h-screen bg-negro-principal py-12 px-4 relative overflow-hidden flex items-center justify-center">
+    
+    <!-- Partículas de fondo -->
+    <div id="particles-bg" class="absolute inset-0 pointer-events-none"></div>
+    
+    <!-- Elementos decorativos de alerta -->
+    <div class="absolute top-0 left-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 0.5s;"></div>
+
+    <div class="bg-gris-oscuro text-blanco p-8 md:p-10 rounded-2xl shadow-2xl border-2 border-red-600/30 max-w-lg w-full relative z-10 backdrop-blur-sm" id="delete-container">
+        
+        <!-- Esquinas decorativas rojas -->
+        <div class="absolute top-0 left-0 w-16 h-16 border-l-2 border-t-2 border-red-600 rounded-tl-2xl"></div>
+        <div class="absolute top-0 right-0 w-16 h-16 border-r-2 border-t-2 border-red-600 rounded-tr-2xl"></div>
+        <div class="absolute bottom-0 left-0 w-16 h-16 border-l-2 border-b-2 border-red-600 rounded-bl-2xl"></div>
+        <div class="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-red-600 rounded-br-2xl"></div>
+
+        <!-- Icono de advertencia -->
+        <div class="text-center mb-6" id="warning-header">
+            <div class="inline-block mb-4">
+                <div class="w-20 h-20 bg-gradient-to-br from-red-600 to-red-500 rounded-full flex items-center justify-center mx-auto warning-pulse">
+                    <svg class="w-10 h-10 text-blanco animate-shake" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h2 class="text-3xl font-black mb-2 text-red-500">¡Eliminar Usuario!</h2>
+            <div class="mt-4 h-1 w-32 bg-gradient-to-r from-red-600 to-red-500 mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Mensaje de confirmación -->
+        <div class="bg-red-600/10 border-2 border-red-600/50 rounded-xl p-6 mb-6" id="warning-message">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0">
+                    <svg class="w-8 h-8 text-red-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-gris-claro text-lg mb-3">
+                        ¿Estás seguro de que deseas eliminar al usuario?
+                    </p>
+                    <div class="bg-negro-principal border border-red-600/30 rounded-lg p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-rojo-intenso to-rojo-suave rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-blanco" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gris-medio uppercase tracking-wider mb-1">Usuario</p>
+                                <p class="text-xl font-black text-red-500">{{ usuario.username }}</p>
+                                <p class="text-sm text-gris-claro mt-1">{{ usuario.first_name }} {{ usuario.last_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+                        <p class="text-sm text-red-400 font-medium flex items-start gap-2">
+                            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <span>Esta acción no se puede deshacer. Todos los datos del usuario serán eliminados permanentemente.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <form method="post" id="delete-form">
+            {% csrf_token %}
+            
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                <!-- Botón Cancelar -->
+                <a href="{% url 'lista_usuarios' %}" 
+                   class="flex-1 bg-gris-medio/20 hover:bg-gris-medio/30 text-blanco font-bold px-6 py-3 rounded-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-105 border-2 border-gris-medio/30 hover:border-gris-medio/50 relative overflow-hidden group text-center">
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Cancelar
+                    </span>
+                </a>
+
+                <!-- Botón Eliminar -->
+                <button type="submit" 
+                        id="delete-btn"
+                        class="flex-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-blanco font-black px-6 py-3 rounded-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-red-600/40 relative overflow-hidden group">
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar Usuario
+                    </span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-blanco/0 via-blanco/20 to-blanco/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                </button>
+            </div>
+        </form>
+
+        <!-- Nota adicional -->
+        <div class="mt-6 pt-6 border-t border-gris-medio/10">
+            <p class="text-center text-gris-medio text-sm flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Si tienes dudas, contacta al administrador del sistema
+            </p>
+        </div>
+    </div>
+</div>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'negro-principal': '#111111',
+                    'gris-oscuro': '#1C1C1C',
+                    'gris-medio': '#AAAAAA',
+                    'blanco': '#FFFFFF',
+                    'rojo-intenso': '#B51E23',
+                    'rojo-suave': '#D9322A',
+                    'gris-claro': '#E0E0E0'
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    body { 
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+    h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+    
+    .warning-pulse {
+        animation: warningPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes warningPulse {
+        0%, 100% { 
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+        }
+        50% { 
+            transform: scale(1.05);
+            box-shadow: 0 0 0 15px rgba(220, 38, 38, 0);
+        }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .animate-shake {
+        animation: shake 3s ease-in-out infinite;
+    }
+    
+    .particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: #dc2626;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    /* Animación de parpadeo para el texto de advertencia */
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Crear partículas de advertencia
+        const particlesBg = document.getElementById('particles-bg');
+        if (particlesBg) {
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particlesBg.appendChild(particle);
+            }
+
+            // Animar partículas
+            if (typeof anime !== 'undefined') {
+                anime({
+                    targets: '.particle',
+                    opacity: [0, 0.6, 0],
+                    translateY: () => anime.random(-100, 100),
+                    translateX: () => anime.random(-100, 100),
+                    scale: [0, 1.5, 0],
+                    duration: () => anime.random(2000, 4000),
+                    delay: anime.stagger(50),
+                    loop: true,
+                    easing: 'easeInOutQuad'
+                });
+            }
+        }
+
+        // Animaciones de entrada
+        if (typeof anime !== 'undefined') {
+            // Contenedor principal
+            anime({
+                targets: '#delete-container',
+                opacity: [0, 1],
+                scale: [0.9, 1],
+                duration: 600,
+                easing: 'easeOutExpo'
+            });
+
+            // Header de advertencia
+            anime({
+                targets: '#warning-header',
+                opacity: [0, 1],
+                translateY: [-30, 0],
+                duration: 600,
+                delay: 200,
+                easing: 'easeOutExpo'
+            });
+
+            // Mensaje de advertencia
+            anime({
+                targets: '#warning-message',
+                opacity: [0, 1],
+                translateX: [-50, 0],
+                duration: 600,
+                delay: 400,
+                easing: 'easeOutExpo'
+            });
+
+            // Botones
+            anime({
+                targets: '#delete-form',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 600,
+                delay: 600,
+                easing: 'easeOutExpo'
+            });
+        }
+
+        // Confirmación adicional antes de eliminar
+        const deleteForm = document.getElementById('delete-form');
+        const deleteBtn = document.getElementById('delete-btn');
+
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Cambiar el texto y animar el botón
+                const btnText = this.querySelector('span');
+                btnText.innerHTML = `
+                    <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Confirmando...
+                `;
+                
+                this.disabled = true;
+                this.classList.add('opacity-75', 'cursor-not-allowed');
+
+                // Animación de advertencia final
+                if (typeof anime !== 'undefined') {
+                    anime({
+                        targets: '#delete-container',
+                        scale: [1, 0.98, 1],
+                        duration: 300,
+                        easing: 'easeInOutQuad',
+                        complete: function() {
+                            // Enviar el formulario después de la animación
+                            deleteForm.submit();
+                        }
+                    });
+                } else {
+                    // Si no hay anime.js, enviar directamente
+                    deleteForm.submit();
+                }
+            });
+        }
+
+        // Efecto de hover en los botones
+        const buttons = document.querySelectorAll('button, a[href]');
+        if (typeof anime !== 'undefined') {
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this,
+                        scale: 1.05,
+                        duration: 200,
+                        easing: 'easeOutExpo'
+                    });
+                });
+
+                button.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this,
+                        scale: 1,
+                        duration: 200,
+                        easing: 'easeOutExpo'
+                    });
+                });
+            });
+        }
+
+        // Animación de parpadeo periódico en el icono de advertencia
+        if (typeof anime !== 'undefined') {
+            anime({
+                targets: '.warning-pulse svg',
+                opacity: [1, 0.5, 1],
+                duration: 2000,
+                loop: true,
+                easing: 'easeInOutSine'
+            });
+        }
+    });
+</script>
+{% endblock %}

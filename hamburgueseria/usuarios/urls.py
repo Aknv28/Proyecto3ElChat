@@ -1,5 +1,3 @@
-# usuarios/urls.py
-
 from django.urls import path
 from django.views.decorators.cache import never_cache
 from . import views
@@ -17,6 +15,14 @@ urlpatterns = [
     path('admin_dashboard/', never_cache(views.admin_dashboard), name='admin_dashboard'),
     path('cocinero_dashboard/', never_cache(views.cocinero_dashboard), name='cocinero_dashboard'),
     path('cajero_dashboard/', never_cache(views.cajero_dashboard), name='cajero_dashboard'),
+
+    # ============================================
+    # CRUD DE USUARIOS (solo para administradores)
+    # ============================================
+    path('usuarios/', never_cache(views.lista_usuarios), name='lista_usuarios'),
+    path('usuarios/crear/', never_cache(views.crear_usuario), name='crear_usuario'),
+    path('usuarios/editar/<int:id>/', never_cache(views.editar_usuario), name='editar_usuario'),
+    path('usuarios/eliminar/<int:id>/', never_cache(views.eliminar_usuario), name='eliminar_usuario'),
 
     # ============================================
     # PÁGINAS PÚBLICAS

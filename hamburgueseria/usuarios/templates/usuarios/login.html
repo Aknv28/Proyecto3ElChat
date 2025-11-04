@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-       {% include 'usuarios/header.html' %}
+{% include 'usuarios/header.html' %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -31,32 +33,161 @@
         body {
             font-family: 'Montserrat', sans-serif;
         }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #B51E23;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .grid-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #B51E23, transparent);
+            opacity: 0.05;
+        }
+
+        .grid-line.horizontal {
+            width: 100%;
+            height: 1px;
+        }
+
+        .grid-line.vertical {
+            width: 1px;
+            height: 100%;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(181, 30, 35, 0.5),
+                         0 0 40px rgba(181, 30, 35, 0.3),
+                         0 0 60px rgba(181, 30, 35, 0.2);
+        }
+
+        .corner-accent {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #B51E23;
+            opacity: 0.3;
+        }
+
+        .corner-accent.top-left {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-accent.top-right {
+            top: -2px;
+            right: -2px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-accent.bottom-left {
+            bottom: -2px;
+            left: -2px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-accent.bottom-right {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(181, 30, 35, 0.1),
+                        0 0 20px rgba(181, 30, 35, 0.2);
+        }
+
+        .scanline {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #B51E23, transparent);
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
-<body class="bg-negro-principal min-h-screen">
 
-    <!-- Header incluido -->
- 
+<body class="bg-negro-principal min-h-screen">
 
     <!-- Contenedor principal del login -->
     <div class="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 relative overflow-hidden">
-        
-        <!-- Elementos decorativos de fondo -->
-        <div class="absolute top-0 left-0 w-96 h-96 bg-rojo-intenso/5 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-rojo-suave/5 rounded-full blur-3xl"></div>
 
-        <div class="w-full max-w-md relative z-10 py-8">
-            <div class="bg-gris-oscuro rounded-2xl shadow-2xl p-10 border border-gris-medio/10 backdrop-blur-sm">
-                
+        <!-- Grid de fondo animado -->
+        <div id="grid-container" class="absolute inset-0 pointer-events-none"></div>
+
+        <!-- Partículas flotantes -->
+        <div id="particles-container" class="absolute inset-0 pointer-events-none"></div>
+
+        <!-- Elementos decorativos de fondo -->
+        <div class="absolute top-0 left-0 w-96 h-96 bg-rojo-intenso/5 rounded-full blur-3xl floating"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-rojo-suave/5 rounded-full blur-3xl floating" style="animation-delay: -3s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rojo-intenso/3 rounded-full blur-3xl"></div>
+
+        <!-- Círculos decorativos -->
+        <div class="absolute top-20 left-10 w-2 h-2 bg-rojo-intenso rounded-full opacity-50"></div>
+        <div class="absolute top-40 right-20 w-3 h-3 bg-rojo-suave rounded-full opacity-30"></div>
+        <div class="absolute bottom-32 left-32 w-2 h-2 bg-rojo-intenso rounded-full opacity-40"></div>
+        <div class="absolute bottom-20 right-40 w-3 h-3 bg-rojo-suave rounded-full opacity-50"></div>
+
+        <div class="w-full max-w-md relative z-10 py-8" id="login-container">
+            <div class="bg-gris-oscuro rounded-2xl shadow-2xl p-10 border border-gris-medio/10 backdrop-blur-sm relative" id="form-card">
+
+                <!-- Esquinas decorativas -->
+                <div class="corner-accent top-left"></div>
+                <div class="corner-accent top-right"></div>
+                <div class="corner-accent bottom-left"></div>
+                <div class="corner-accent bottom-right"></div>
+
+                <!-- Línea de escaneo -->
+                <div class="scanline" id="scanline"></div>
+
                 <!-- Título -->
-                <div class="text-center mb-10">
-                    <div class="inline-block">
-                        <h2 class="text-blanco text-5xl font-black mb-2 tracking-tight relative">
+                <div class="text-center mb-10" id="title-section">
+                    <div class="inline-block relative">
+                        <!-- Líneas decorativas superiores -->
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+                            <div class="w-12 h-0.5 bg-gradient-to-r from-transparent to-rojo-intenso"></div>
+                            <div class="w-2 h-2 bg-rojo-intenso rounded-full"></div>
+                            <div class="w-12 h-0.5 bg-gradient-to-l from-transparent to-rojo-intenso"></div>
+                        </div>
+
+                        <h2 class="text-blanco text-5xl font-black mb-2 tracking-tight relative glow-text">
                             MAMA GRANDE
                             <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rojo-intenso to-transparent"></div>
                         </h2>
+
+                        <!-- Líneas decorativas inferiores -->
+                        <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+                            <div class="w-8 h-0.5 bg-gradient-to-r from-transparent to-rojo-suave"></div>
+                            <div class="w-2 h-2 bg-rojo-suave rounded-full"></div>
+                            <div class="w-8 h-0.5 bg-gradient-to-l from-transparent to-rojo-suave"></div>
+                        </div>
                     </div>
-                    <p class="text-gris-medio text-sm font-bold mt-6 tracking-wide">ACCEDE A TU CUENTA</p>
+                    <p class="text-gris-medio text-sm font-bold mt-10 tracking-[0.3em] relative">
+                        <span class="inline-block px-4 py-2 border border-gris-medio/20 rounded-lg bg-negro-principal/30">
+                            ACCEDE A TU CUENTA
+                        </span>
+                    </p>
                 </div>
 
                 <!-- Formulario Django -->
@@ -64,160 +195,369 @@
                     {% csrf_token %}
 
                     <!-- Campo Usuario -->
-                    <div class="group">
-                        <label for="id_username" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest">
-                            Usuario
-                        </label>
-                        {{ form.username }}
+                    <div class="group form-field">
+                        <div class="relative">
+                            <label for="id_username" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-rojo-intenso rounded-full"></span>
+                                Usuario
+                            </label>
+                            {{ form.username }}
+                            <!-- Barra de progreso visual -->
+                            <div class="absolute bottom-0 left-0 h-0.5 bg-rojo-intenso/0 transition-all duration-300 input-progress" style="width: 0%;"></div>
+                        </div>
                         <div id="username-error" class="text-rojo-intenso text-sm mt-2 hidden"></div>
                         {% for error in form.username.errors %}
-                            <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
+                        <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
                         {% endfor %}
                     </div>
 
                     <!-- Campo Contraseña -->
-                    <div class="group">
-                        <label for="id_password" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest">
-                            Contraseña
-                        </label>
-                        {{ form.password }}
+                    <div class="group form-field">
+                        <div class="relative">
+                            <label for="id_password" class="block text-gris-claro text-xs font-black mb-3 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-rojo-intenso rounded-full"></span>
+                                Contraseña
+                            </label>
+                            {{ form.password }}
+                            <!-- Barra de progreso visual -->
+                            <div class="absolute bottom-0 left-0 h-0.5 bg-rojo-intenso/0 transition-all duration-300 input-progress" style="width: 0%;"></div>
+                        </div>
                         <div id="password-error" class="text-rojo-intenso text-sm mt-2 hidden"></div>
                         {% for error in form.password.errors %}
-                            <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
+                        <div class="text-rojo-intenso text-sm mt-2">{{ error }}</div>
                         {% endfor %}
                     </div>
 
                     <!-- Botón -->
-                    <button 
-                        type="submit"
-                        id="submit-btn"
-                        class="w-full bg-gradient-to-r from-rojo-intenso to-rojo-suave hover:from-rojo-suave hover:to-rojo-intenso text-blanco font-black py-5 px-6 rounded-xl uppercase tracking-widest text-base transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-rojo-intenso/40 active:scale-[0.98] mt-8"
-                    >
-                        INGRESAR
+                    <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-rojo-intenso to-rojo-suave hover:from-rojo-suave hover:to-rojo-intenso text-blanco font-black py-5 px-6 rounded-xl uppercase tracking-widest text-base transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-rojo-intenso/40 active:scale-[0.98] mt-8 relative overflow-hidden group">
+                        <span class="relative z-10">INGRESAR</span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-blanco/0 via-blanco/20 to-blanco/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                     </button>
 
                     <!-- Mostrar solo errores no relacionados con fields -->
                     {% if form.non_field_errors %}
                         {% for error in form.non_field_errors %}
-                            <div class="text-rojo-intenso text-sm mt-4 text-center bg-rojo-intenso/10 p-3 rounded-lg border border-rojo-intenso/30">
-                                {{ error }}
+                            <div class="text-rojo-intenso text-sm mt-4 text-center bg-rojo-intenso/10 p-3 rounded-lg border border-rojo-intenso/30 animate-pulse">
+                                {% if error == "Please enter a correct username and password. Note that both fields may be case-sensitive." %}
+                                    Por favor, introduce un nombre de usuario y una contraseña correctos.
+                                {% else %}
+                                    {{ error }}
+                                {% endif %}
                             </div>
                         {% endfor %}
                     {% endif %}
+
                 </form>
 
-                <!-- Estilo de los inputs Django -->
-                <script>
-                    // Añadir clases de Tailwind a los campos generados por Django automáticamente
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
-                        inputs.forEach(input => {
-                            input.classList.add(
-                                'w-full', 'px-5', 'py-4', 'bg-negro-principal',
-                                'border-2', 'border-gris-medio/20', 'rounded-xl',
-                                'text-blanco', 'placeholder-gris-medio/50',
-                                'focus:outline-none', 'focus:border-rojo-intenso',
-                                'focus:shadow-lg', 'focus:shadow-rojo-intenso/20',
-                                'transition-all', 'duration-300', 'font-bold'
-                            );
-                        });
-
-                        // Añadir atributos de validación
-                        const usernameInput = document.getElementById('id_username');
-                        const passwordInput = document.getElementById('id_password');
-                        
-                        if (usernameInput) {
-                            usernameInput.setAttribute('minlength', '4');
-                            usernameInput.setAttribute('maxlength', '20');
-                            usernameInput.setAttribute('autocomplete', 'username');
-                        }
-                        
-                        if (passwordInput) {
-                            passwordInput.setAttribute('minlength', '8');
-                            passwordInput.setAttribute('maxlength', '20');
-                            passwordInput.setAttribute('autocomplete', 'current-password');
-                        }
-
-                        // Validación en tiempo real
-                        const usernameError = document.getElementById('username-error');
-                        const passwordError = document.getElementById('password-error');
-
-                        if (usernameInput) {
-                            usernameInput.addEventListener('input', function() {
-                                const value = this.value;
-                                if (value.length > 0 && value.length < 4) {
-                                    usernameError.textContent = '⚠️ El usuario debe tener al menos 4 caracteres';
-                                    usernameError.classList.remove('hidden');
-                                } else if (value.length > 20) {
-                                    usernameError.textContent = '⚠️ El usuario no puede exceder 20 caracteres';
-                                    usernameError.classList.remove('hidden');
-                                } else {
-                                    usernameError.classList.add('hidden');
-                                }
-                            });
-                        }
-
-                        if (passwordInput) {
-                            passwordInput.addEventListener('input', function() {
-                                const value = this.value;
-                                if (value.length > 0 && value.length < 8) {
-                                    passwordError.textContent = '⚠️ La contraseña debe tener al menos 8 caracteres';
-                                    passwordError.classList.remove('hidden');
-                                } else if (value.length > 20) {
-                                    passwordError.textContent = '⚠️ La contraseña no puede exceder 20 caracteres';
-                                    passwordError.classList.remove('hidden');
-                                } else {
-                                    passwordError.classList.add('hidden');
-                                }
-                            });
-                        }
-
-                        // Validación en el submit
-                        const form = document.getElementById('login-form');
-                        form.addEventListener('submit', function(e) {
-                            let isValid = true;
-
-                            // Validar usuario
-                            if (usernameInput) {
-                                const username = usernameInput.value.trim();
-                                if (username.length < 4) {
-                                    e.preventDefault();
-                                    usernameError.textContent = '⚠️ El usuario debe tener al menos 4 caracteres';
-                                    usernameError.classList.remove('hidden');
-                                    isValid = false;
-                                } else if (username.length > 20) {
-                                    e.preventDefault();
-                                    usernameError.textContent = '⚠️ El usuario no puede exceder 20 caracteres';
-                                    usernameError.classList.remove('hidden');
-                                    isValid = false;
-                                }
-                            }
-
-                            // Validar contraseña
-                            if (passwordInput) {
-                                const password = passwordInput.value;
-                                if (password.length < 8) {
-                                    e.preventDefault();
-                                    passwordError.textContent = '⚠️ La contraseña debe tener al menos 8 caracteres';
-                                    passwordError.classList.remove('hidden');
-                                    isValid = false;
-                                } else if (password.length > 20) {
-                                    e.preventDefault();
-                                    passwordError.textContent = '⚠️ La contraseña no puede exceder 20 caracteres';
-                                    passwordError.classList.remove('hidden');
-                                    isValid = false;
-                                }
-                            }
-
-                            if (!isValid) {
-                                return false;
-                            }
-                        });
-                    });
-                </script>
+                <!-- Decoración inferior -->
+                <div class="mt-8 pt-6 border-t border-gris-medio/10 flex justify-center gap-3">
+                    <div class="w-8 h-0.5 bg-gradient-to-r from-rojo-intenso to-transparent"></div>
+                    <div class="w-2 h-2 bg-rojo-intenso rounded-full"></div>
+                    <div class="w-8 h-0.5 bg-gradient-to-l from-rojo-intenso to-transparent"></div>
+                </div>
             </div>
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Crear grid de fondo
+            const gridContainer = document.getElementById('grid-container');
+            for (let i = 0; i < 6; i++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line horizontal';
+                line.style.top = `${i * 20}%`;
+                gridContainer.appendChild(line);
+            }
+            for (let i = 0; i < 8; i++) {
+                const line = document.createElement('div');
+                line.className = 'grid-line vertical';
+                line.style.left = `${i * 12.5}%`;
+                gridContainer.appendChild(line);
+            }
+
+            // Crear partículas flotantes
+            const particlesContainer = document.getElementById('particles-container');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particlesContainer.appendChild(particle);
+            }
+
+            // Animación de entrada del contenedor
+            anime({
+                targets: '#login-container',
+                opacity: [0, 1],
+                translateY: [50, 0],
+                duration: 1000,
+                easing: 'easeOutExpo'
+            });
+
+            // Animación del título
+            anime({
+                targets: '#title-section h2',
+                opacity: [0, 1],
+                scale: [0.8, 1],
+                duration: 1200,
+                delay: 200,
+                easing: 'easeOutElastic(1, .6)'
+            });
+
+            anime({
+                targets: '#title-section p',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 800,
+                delay: 400,
+                easing: 'easeOutExpo'
+            });
+
+            // Animación de los campos del formulario
+            anime({
+                targets: '.form-field',
+                opacity: [0, 1],
+                translateX: [-30, 0],
+                duration: 800,
+                delay: anime.stagger(100, {start: 600}),
+                easing: 'easeOutExpo'
+            });
+
+            // Animación del botón
+            anime({
+                targets: '#submit-btn',
+                opacity: [0, 1],
+                scale: [0.9, 1],
+                duration: 600,
+                delay: 1000,
+                easing: 'easeOutExpo'
+            });
+
+            // Animación de las esquinas
+            anime({
+                targets: '.corner-accent',
+                opacity: [0, 0.3],
+                scale: [0.5, 1],
+                duration: 1000,
+                delay: anime.stagger(100, {start: 800}),
+                easing: 'easeOutExpo'
+            });
+
+            // Animación de partículas
+            anime({
+                targets: '.particle',
+                opacity: [0, 0.6, 0],
+                translateY: [0, -100],
+                translateX: () => anime.random(-50, 50),
+                duration: () => anime.random(3000, 6000),
+                delay: anime.stagger(200),
+                loop: true,
+                easing: 'easeInOutQuad'
+            });
+
+            // Línea de escaneo periódica
+            setInterval(() => {
+                anime({
+                    targets: '#scanline',
+                    top: ['0%', '100%'],
+                    opacity: [0, 0.3, 0],
+                    duration: 2000,
+                    easing: 'easeInOutQuad'
+                });
+            }, 8000);
+
+            // Estilo de los inputs Django
+            const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+            inputs.forEach((input, index) => {
+                input.classList.add(
+                    'w-full', 'px-5', 'py-4', 'bg-negro-principal',
+                    'border-2', 'border-gris-medio/20', 'rounded-xl',
+                    'text-blanco', 'placeholder-gris-medio/50',
+                    'focus:outline-none', 'focus:border-rojo-intenso',
+                    'transition-all', 'duration-300', 'font-bold', 'input-glow'
+                );
+
+                // Animación de entrada de los inputs
+                anime({
+                    targets: input,
+                    opacity: [0, 1],
+                    duration: 600,
+                    delay: 700 + (index * 100),
+                    easing: 'easeOutExpo'
+                });
+
+                // Animación al hacer focus
+                input.addEventListener('focus', function() {
+                    const progressBar = this.parentElement.querySelector('.input-progress');
+                    anime({
+                        targets: this,
+                        scale: [1, 1.01, 1],
+                        duration: 300,
+                        easing: 'easeOutExpo'
+                    });
+                    anime({
+                        targets: progressBar,
+                        width: '100%',
+                        opacity: [0, 0.5],
+                        duration: 400,
+                        easing: 'easeOutExpo'
+                    });
+                });
+
+                input.addEventListener('blur', function() {
+                    const progressBar = this.parentElement.querySelector('.input-progress');
+                    anime({
+                        targets: progressBar,
+                        width: '0%',
+                        opacity: 0,
+                        duration: 400,
+                        easing: 'easeOutExpo'
+                    });
+                });
+            });
+
+            const usernameInput = document.getElementById('id_username');
+            const passwordInput = document.getElementById('id_password');
+            const usernameError = document.getElementById('username-error');
+            const passwordError = document.getElementById('password-error');
+
+            if (usernameInput) {
+                usernameInput.setAttribute('minlength', '4');
+                usernameInput.setAttribute('maxlength', '20');
+                usernameInput.setAttribute('autocomplete', 'username');
+                usernameInput.setAttribute('pattern', '[a-z0-9-]{4,20}');
+                usernameInput.setAttribute('title', 'Solo letras minúsculas, números y guiones, sin espacios');
+
+                usernameInput.addEventListener('input', function () {
+                    let value = this.value;
+                    let cleaned = value.replace(/\s/g, '').toLowerCase();
+
+                    if (cleaned !== value) {
+                        this.value = cleaned;
+                    }
+
+                    if (cleaned.length > 0 && cleaned.length < 4) {
+                        usernameError.textContent = 'El usuario debe tener al menos 4 caracteres';
+                        usernameError.classList.remove('hidden');
+                        anime({
+                            targets: usernameError,
+                            opacity: [0, 1],
+                            translateY: [-10, 0],
+                            duration: 300,
+                            easing: 'easeOutExpo'
+                        });
+                    } else if (cleaned.length > 20) {
+                        usernameError.textContent = 'Máximo 20 caracteres';
+                        usernameError.classList.remove('hidden');
+                    } else if (value !== cleaned && value.length > 0) {
+                        usernameError.textContent = 'Se eliminaron espacios y mayúsculas';
+                        usernameError.classList.remove('hidden');
+                        setTimeout(() => {
+                            anime({
+                                targets: usernameError,
+                                opacity: 0,
+                                duration: 300,
+                                complete: () => usernameError.classList.add('hidden')
+                            });
+                        }, 2000);
+                    } else {
+                        anime({
+                            targets: usernameError,
+                            opacity: 0,
+                            duration: 300,
+                            complete: () => usernameError.classList.add('hidden')
+                        });
+                    }
+                });
+
+                usernameInput.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                    let paste = (e.clipboardData || window.clipboardData).getData('text');
+                    let cleaned = paste.replace(/\s/g, '').toLowerCase();
+                    document.execCommand('insertText', false, cleaned);
+                });
+            }
+
+            if (passwordInput) {
+                passwordInput.setAttribute('minlength', '8');
+                passwordInput.setAttribute('maxlength', '20');
+                passwordInput.setAttribute('autocomplete', 'current-password');
+
+                passwordInput.addEventListener('input', function () {
+                    const value = this.value;
+                    if (value.length > 0 && value.length < 8) {
+                        passwordError.textContent = 'La contraseña debe tener al menos 8 caracteres';
+                        passwordError.classList.remove('hidden');
+                        anime({
+                            targets: passwordError,
+                            opacity: [0, 1],
+                            translateY: [-10, 0],
+                            duration: 300,
+                            easing: 'easeOutExpo'
+                        });
+                    } else if (value.length > 20) {
+                        passwordError.textContent = 'Máximo 20 caracteres';
+                        passwordError.classList.remove('hidden');
+                    } else {
+                        anime({
+                            targets: passwordError,
+                            opacity: 0,
+                            duration: 300,
+                            complete: () => passwordError.classList.add('hidden')
+                        });
+                    }
+                });
+            }
+
+            // Validación final al enviar con animación
+            const form = document.getElementById('login-form');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            form.addEventListener('submit', function (e) {
+                let isValid = true;
+                let username = usernameInput ? usernameInput.value.trim() : '';
+
+                if (!/^[a-z0-9-]{4,20}$/.test(username)) {
+                    e.preventDefault();
+                    usernameError.textContent = 'Usuario inválido: solo minúsculas, números, guiones y sin espacios';
+                    usernameError.classList.remove('hidden');
+                    anime({
+                        targets: usernameInput,
+                        translateX: [0, -10, 10, -10, 10, 0],
+                        duration: 400,
+                        easing: 'easeInOutSine'
+                    });
+                    isValid = false;
+                }
+
+                if (passwordInput && (passwordInput.value.length < 8 || passwordInput.value.length > 20)) {
+                    e.preventDefault();
+                    passwordError.textContent = 'Contraseña debe tener entre 8 y 20 caracteres';
+                    passwordError.classList.remove('hidden');
+                    anime({
+                        targets: passwordInput,
+                        translateX: [0, -10, 10, -10, 10, 0],
+                        duration: 400,
+                        easing: 'easeInOutSine'
+                    });
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // Animación del botón al enviar
+                    anime({
+                        targets: submitBtn,
+                        scale: [1, 0.95, 1.05, 1],
+                        duration: 600,
+                        easing: 'easeInOutExpo'
+                    });
+                }
+
+                if (!isValid) return false;
+            });
+        });
+    </script>
 </body>
+
 </html>

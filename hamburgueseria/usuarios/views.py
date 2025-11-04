@@ -351,3 +351,54 @@ def test_500(request):
 def test_403(request):
     """Vista para probar la página 403"""
     return render(request, '403.html', status=403)
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Usuario
+from .forms import UsuarioCreationForm, UsuarioChangeForm
+
+@login_required
+def lista_usuarios(request):
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios})
+
+@login_required
+def crear_usuario(request):
+    if request.method == 'POST':
+        form = UsuarioCreationForm(request.POST)
+        if form.is_valid():
+            try:
+                user = form.save()
+                messages.success(request, f'✅ Usuario "{user.username}" creado exitosamente!')
+                return redirect('lista_usuarios')
+            except Exception as e:
+                messages.error(request, f'❌ Error al crear el usuario: {str(e)}')
+        else:
+            messages.error(request, '❌ Por favor corrige los errores en el formulario.')
+    else:
+        form = UsuarioCreationForm()
+    
+    return render(request, 'usuarios/crear_usuario.html', {'form': form})
+
+@login_required
+def editar_usuario(request, id):
+    usuario = get_object_or_404(Usuario, id=id)
+    if request.method == 'POST':
+        form = UsuarioChangeForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_usuarios')
+    else:
+        form = UsuarioChangeForm(instance=usuario)
+    return render(request, 'usuarios/editar_usuario.html', {'form': form})
+
+@login_required
+def eliminar_usuario(request, id):
+    usuario = get_object_or_404(Usuario, id=id)
+    if request.method == 'POST':
+        usuario.delete()
+        return redirect('lista_usuarios')
+    return render(request, 'usuarios/eliminar_usuario.html', {'usuario': usuario})

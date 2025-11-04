@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l98%w5e387gz58!tj2pv*t3nba!wh=89%^8#*=29+)ylto==7a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
@@ -131,7 +131,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-AUTH_USER_MODEL = 'usuarios.usuario'  # Cambia 'sistema' por 'usuarios'
+AUTH_USER_MODEL = 'usuarios.Usuario'  # Cambia 'sistema' por 'usuarios'
 
 LOGIN_URL = '/usuarios/login/'
 
