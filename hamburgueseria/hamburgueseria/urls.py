@@ -6,11 +6,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # URL para el panel de administración
+    # URL para el panel de administración de Django
     path('admin/', admin.site.urls),
     
-    # Rutas de la app 'usuarios' (incluye index, login, dashboards, etc.)
-    path('', include('usuarios.urls')),
+    # Apps del proyecto
+    path('', include('usuarios.urls')),  # Páginas públicas, auth y gestión de usuarios
+    path('administracion/', include('administracion.urls')),  # Dashboard y funciones de admin
+    path('cajero/', include('cajero.urls')),  # Menú, pedidos y dashboard de cajero
+    path('cocina/', include('cocina.urls')),  # Dashboard y gestión de pedidos en cocina
 ]
 
 # ============================================

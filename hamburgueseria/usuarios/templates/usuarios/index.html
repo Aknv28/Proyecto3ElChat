@@ -100,11 +100,11 @@
             La hamburguesería que se ha convertido en un referente para los amantes de las hamburguesas en La Paz
         </p>
         <div class="flex justify-center gap-4 flex-wrap">
-            <a href="{% url 'servicios' %}" 
+            <a href="{% url 'usuarios:servicios' %}" 
                class="bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-8 rounded-lg text-lg transition-all shadow-lg hover:shadow-2xl hover:scale-105 transform">
                 EXPLORAR MENÚ
             </a>
-            <a href="{% url 'contactanos' %}" 
+            <a href="{% url 'usuarios:contactanos' %}" 
                class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-rojo-intenso font-display font-bold py-3 px-8 rounded-lg text-lg transition-all shadow-lg">
                 ENCUÉNTRANOS
             </a>
@@ -261,11 +261,11 @@
             Vive la experiencia Mamá Grande y entiende por qué nos hemos convertido en el referente de hamburguesas en La Paz
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{% url 'servicios' %}" 
+            <a href="{% url 'usuarios:servicios' %}" 
                class="bg-white text-rojo-intenso hover:bg-gris-claro font-display font-bold py-4 px-8 rounded-lg text-lg transition-all shadow-lg hover:shadow-2xl hover:scale-105 transform">
                 VER NUESTRO MENÚ
             </a>
-            <a href="{% url 'contactanos' %}" 
+            <a href="{% url 'usuarios:contactanos' %}" 
                class="bg-negro-principal text-white hover:bg-gris-oscuro font-display font-bold py-4 px-8 rounded-lg text-lg transition-all shadow-lg border-2 border-white hover:scale-105 transform">
                 VISÍTANOS
             </a>
@@ -281,11 +281,11 @@
                 &copy; 2025 <span class="text-rojo-intenso font-bold">Hamburguesería Mamá Grande</span> | Todos los derechos reservados
             </p>
             <div class="flex flex-wrap justify-center gap-6 text-sm">
-                <a href="{% url 'sobre_nosotros' %}" class="text-white hover:text-rojo-intenso transition-colors">Sobre Nosotros</a>
+                <a href="{% url 'usuarios:sobre_nosotros' %}" class="text-white hover:text-rojo-intenso transition-colors">Sobre Nosotros</a>
                 <span class="text-gris-oscuro">|</span>
-                <a href="{% url 'servicios' %}" class="text-white hover:text-rojo-intenso transition-colors">Servicios</a>
+                <a href="{% url 'usuarios:servicios' %}" class="text-white hover:text-rojo-intenso transition-colors">Servicios</a>
                 <span class="text-gris-oscuro">|</span>
-                <a href="{% url 'contactanos' %}" class="text-white hover:text-rojo-intenso transition-colors">Contáctanos</a>
+                <a href="{% url 'usuarios:contactanos' %}" class="text-white hover:text-rojo-intenso transition-colors">Contáctanos</a>
             </div>
         </div>
     </div>

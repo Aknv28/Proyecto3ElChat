@@ -114,7 +114,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-4 sm:py-6">
             <!-- Logo/Título -->
-            <a href="{% url 'index' %}" class="flex-shrink-0 group">
+            <a href="{% url 'usuarios:index' %}" class="flex-shrink-0 group">
                 <h1 class="font-display font-black text-2xl sm:text-3xl tracking-tight text-rojo-intenso group-hover:text-rojo-suave transition-colors duration-300">
                     MAMA GRANDE
                 </h1>
@@ -125,19 +125,19 @@
 
             <!-- Navigation Links - Desktop -->
             <nav class="hidden md:flex items-center space-x-1 lg:space-x-2" aria-label="Navegación principal">
-                <a href="{% url 'index' %}" 
+                <a href="{% url 'usuarios:index' %}" 
                    class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
                     Inicio
                 </a>
-                <a href="{% url 'sobre_nosotros' %}" 
+                <a href="{% url 'usuarios:sobre_nosotros' %}" 
                    class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
                     Sobre Nosotros
                 </a>
-                <a href="{% url 'servicios' %}" 
+                <a href="{% url 'usuarios:servicios' %}" 
                    class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
                     Servicios
                 </a>
-                <a href="{% url 'contactanos' %}" 
+                <a href="{% url 'usuarios:contactanos' %}" 
                    class="nav-link px-4 py-2 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300">
                     Contáctanos
                 </a>
@@ -170,7 +170,7 @@
                             </div>
                             <div class="p-2">
                                 {% if user.rol == 'cajero' %}
-                                    <a href="{% url 'cajero_dashboard' %}" 
+                                    <a href="{% url 'cajero:cajero_dashboard' %}" 
                                        class="flex items-center gap-2 px-4 py-2 text-white hover:bg-gris-oscuro rounded-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -178,7 +178,7 @@
                                         Mi Dashboard
                                     </a>
                                 {% elif user.rol == 'cocinero' %}
-                                    <a href="{% url 'cocinero_dashboard' %}" 
+                                    <a href="{% url 'cocinero:cocinero_dashboard' %}" 
                                        class="flex items-center gap-2 px-4 py-2 text-white hover:bg-gris-oscuro rounded-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -186,7 +186,7 @@
                                         Mi Dashboard
                                     </a>
                                 {% elif user.rol == 'admin' %}
-                                    <a href="{% url 'admin_dashboard' %}" 
+                                    <a href="{% url 'administracion:dashboard' %}" 
                                        class="flex items-center gap-2 px-4 py-2 text-white hover:bg-gris-oscuro rounded-lg transition-all">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -194,7 +194,7 @@
                                         Mi Dashboard
                                     </a>
                                 {% endif %}
-                                <form action="{% url 'logout' %}" method="POST" class="mt-1">
+                                <form action="{% url 'usuarios:logout' %}" method="POST" class="mt-1">
                                     {% csrf_token %}
                                     <button type="submit" 
                                             class="w-full flex items-center gap-2 px-4 py-2 text-white hover:bg-rojo-intenso rounded-lg transition-all text-left">
@@ -209,7 +209,7 @@
                     </div>
                 {% else %}
                     <!-- Login Button -->
-                    <a href="{% url 'login' %}" 
+                    <a href="{% url 'usuarios:login' %}" 
                        class="hidden sm:block bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-2 px-6 rounded-lg uppercase text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 transform">
                         Login
                     </a>
@@ -235,19 +235,19 @@
              class="md:hidden"
              aria-label="Navegación móvil">
             <div class="flex flex-col space-y-2 pb-4">
-                <a href="{% url 'index' %}" 
+                <a href="{% url 'usuarios:index' %}" 
                    class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
                     Inicio
                 </a>
-                <a href="{% url 'sobre_nosotros' %}" 
+                <a href="{% url 'usuarios:sobre_nosotros' %}" 
                    class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
                     Sobre Nosotros
                 </a>
-                <a href="{% url 'servicios' %}" 
+                <a href="{% url 'usuarios:servicios' %}" 
                    class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
                     Servicios
                 </a>
-                <a href="{% url 'contactanos' %}" 
+                <a href="{% url 'usuarios:contactanos' %}" 
                    class="px-4 py-3 text-white hover:text-rojo-intenso hover:bg-gris-oscuro rounded-lg font-medium transition-all duration-300 border-l-4 border-transparent hover:border-rojo-intenso">
                     Contáctanos
                 </a>
@@ -263,22 +263,22 @@
                             {% endif %}
                         </div>
                         {% if user.rol == 'cajero' %}
-                            <a href="{% url 'cajero_dashboard' %}" 
+                            <a href="{% url 'cajero:cajero_dashboard' %}" 
                                class="block bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md mb-2">
                                 Mi Dashboard
                             </a>
                         {% elif user.rol == 'cocinero' %}
-                            <a href="{% url 'cocinero_dashboard' %}" 
+                            <a href="{% url 'cocinero:cocinero_dashboard' %}" 
                                class="block bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md mb-2">
                                 Mi Dashboard
                             </a>
                         {% elif user.rol == 'admin' %}
-                            <a href="{% url 'admin_dashboard' %}" 
+                            <a href="{% url 'administracion:dashboard' %}" 
                                class="block bg-gris-oscuro hover:bg-rojo-intenso text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md mb-2">
                                 Mi Dashboard
                             </a>
                         {% endif %}
-                        <form action="{% url 'logout' %}" method="POST">
+                        <form action="{% url 'usuarios:logout' %}" method="POST">
                             {% csrf_token %}
                             <button type="submit" 
                                     class="w-full bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md">
@@ -288,7 +288,7 @@
                     </div>
                 {% else %}
                     <!-- Login button for mobile -->
-                    <a href="{% url 'login' %}" 
+                    <a href="{% url 'usuarios:login' %}" 
                        class="mx-4 mt-2 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold py-3 px-6 rounded-lg uppercase text-sm text-center transition-all duration-300 shadow-md">
                         Login
                     </a>

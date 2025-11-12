@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Mama Grande</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'negro-principal': '#111111',
+                        'gris-oscuro': '#1C1C1C',
+                        'gris-medio': '#AAAAAA',
+                        'blanco': '#FFFFFF',
+                        'rojo-intenso': '#B51E23',
+                        'rojo-suave': '#D9322A',
+                        'gris-claro': '#E0E0E0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(181, 30, 35, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .action-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(181, 30, 35, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            border-radius: 50%;
+        }
+
+        .action-card:hover::after {
+            width: 500px;
+            height: 500px;
+        }
+
+        .glow-icon {
+            filter: drop-shadow(0 0 10px rgba(181, 30, 35, 0.5));
+        }
+
+        .action-card:hover .glow-icon {
+            filter: drop-shadow(0 0 20px rgba(181, 30, 35, 0.8));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #B51E23;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #1C1C1C 0%, #111111 100%);
+        }
+
+        .stat-number {
+            background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-number-red {
+            background: linear-gradient(135deg, #D9322A 0%, #B51E23 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .corner-decoration {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #B51E23;
+            opacity: 0.2;
+        }
+
+        .corner-decoration.top-left {
+            top: 10px;
+            left: 10px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-decoration.bottom-right {
+            bottom: 10px;
+            right: 10px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(181, 30, 35, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(181, 30, 35, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .card-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: skewX(-20deg);
+        }
+
+        .action-card:hover .card-shine {
+            animation: shine 0.8s ease-in-out;
+        }
+
+        @keyframes shine {
+            to {
+                left: 150%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-negro-principal min-h-screen grid-bg">
+    
+    <!-- Partículas de fondo -->
+    <div id="particles-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Header -->
+    <header class="header-gradient border-b border-gris-medio/20 sticky top-0 z-40 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-5">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4" id="header-title">
+                    <div class="w-12 h-12 bg-gradient-to-br from-rojo-intenso to-rojo-suave rounded-xl flex items-center justify-center floating">
+                        <svg class="w-7 h-7 text-blanco" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-black text-blanco">Administración</h1>
+                        <p class="text-gris-medio text-sm font-medium">Panel de Control</p>
+                    </div>
+                </div>
+                <form action="{% url 'usuarios:logout' %}" method="POST" id="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-gradient-to-r from-rojo-intenso to-rojo-suave hover:from-rojo-suave hover:to-rojo-intenso text-blanco font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-rojo-intenso/40 hover:scale-105 transform flex items-center gap-2 relative overflow-hidden group">
+                        <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span class="relative z-10">Cerrar sesión</span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-blanco/0 via-blanco/20 to-blanco/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12 relative z-10">
+        <!-- Welcome Message -->
+        <div class="mb-8" id="welcome-section">
+            <div class="bg-gris-oscuro rounded-2xl p-6 border border-gris-medio/10 relative overflow-hidden">
+                <div class="corner-decoration top-left"></div>
+                <div class="corner-decoration bottom-right"></div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-black text-blanco mb-2">Bienvenido, Administrador</h2>
+                    <p class="text-gris-medio">Aquí puedes gestionar todos los aspectos del sistema</p>
+                </div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-rojo-intenso/5 rounded-full blur-3xl"></div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12" id="stats-section">
+            <!-- Stat Card 1 -->
+            <div class="stat-card bg-gris-oscuro rounded-2xl p-8 border border-gris-medio/10 relative group hover:border-rojo-intenso/30 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-rojo-intenso/5 rounded-bl-full"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-gris-medio font-semibold text-sm uppercase tracking-wider">Total Usuarios</p>
+                        <div class="w-10 h-10 bg-rojo-intenso/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-5 h-5 text-rojo-intenso" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-6xl font-black stat-number mb-2">42</p>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-500 font-bold">+12%</span>
+                        <span class="text-gris-medio">vs mes anterior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat Card 2 -->
+            <div class="stat-card bg-gris-oscuro rounded-2xl p-8 border border-gris-medio/10 relative group hover:border-rojo-intenso/30 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-rojo-intenso/5 rounded-bl-full"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-gris-medio font-semibold text-sm uppercase tracking-wider">Cajas Activas</p>
+                        <div class="w-10 h-10 bg-rojo-intenso/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <div class="w-2 h-2 bg-rojo-intenso rounded-full pulse-dot"></div>
+                        </div>
+                    </div>
+                    <p class="text-6xl font-black stat-number-red mb-2">8</p>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-rojo-intenso font-bold">En línea</span>
+                        <span class="text-gris-medio">de 10 totales</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat Card 3 -->
+            <div class="stat-card bg-gris-oscuro rounded-2xl p-8 border border-gris-medio/10 relative group hover:border-rojo-intenso/30 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-rojo-intenso/5 rounded-bl-full"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-gris-medio font-semibold text-sm uppercase tracking-wider">Pedidos Hoy</p>
+                        <div class="w-10 h-10 bg-rojo-intenso/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-5 h-5 text-rojo-intenso" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-6xl font-black stat-number mb-2">156</p>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-500 font-bold">+8%</span>
+                        <span class="text-gris-medio">vs ayer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Title -->
+        <div class="mb-8" id="actions-title">
+            <div class="flex items-center gap-4">
+                <div class="h-1 w-12 bg-gradient-to-r from-rojo-intenso to-rojo-suave rounded-full"></div>
+                <h2 class="text-2xl font-black text-blanco">Acciones Rápidas</h2>
+                <div class="h-1 flex-1 bg-gradient-to-r from-rojo-suave to-transparent rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- Action Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="actions-grid">
+            <!-- Card 1: Ver Cajas -->
+            <a href="#" class="action-card bg-gris-oscuro rounded-2xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/20 relative group">
+                <div class="card-shine"></div>
+                <div class="corner-decoration top-left"></div>
+                <div class="corner-decoration bottom-right"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-rojo-intenso to-rojo-suave rounded-2xl mb-6 glow-icon group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-blanco" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-blanco mb-3 group-hover:text-rojo-intenso transition-colors duration-300">Ver Cajas</h3>
+                    <p class="text-gris-medio font-medium">Gestiona las cajas registradoras y consulta su estado</p>
+                    <div class="mt-6 flex items-center gap-2 text-rojo-intenso font-bold group-hover:gap-4 transition-all duration-300">
+                        <span>Acceder</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 2: Agregar Usuarios -->
+            <a href="{% url 'usuarios:lista_usuarios' %}" class="action-card bg-gris-oscuro rounded-2xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/20 relative group">
+                <div class="card-shine"></div>
+                <div class="corner-decoration top-left"></div>
+                <div class="corner-decoration bottom-right"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-rojo-intenso to-rojo-suave rounded-2xl mb-6 glow-icon group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-blanco" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-blanco mb-3 group-hover:text-rojo-intenso transition-colors duration-300">Agregar Usuarios</h3>
+                    <p class="text-gris-medio font-medium">Crea nuevos usuarios del sistema y asigna roles</p>
+                    <div class="mt-6 flex items-center gap-2 text-rojo-intenso font-bold group-hover:gap-4 transition-all duration-300">
+                        <span>Acceder</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card 3: Ver Cocina -->
+            <a href="#" class="action-card bg-gris-oscuro rounded-2xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/20 relative group">
+                <div class="card-shine"></div>
+                <div class="corner-decoration top-left"></div>
+                <div class="corner-decoration bottom-right"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-rojo-intenso to-rojo-suave rounded-2xl mb-6 glow-icon group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-blanco" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-blanco mb-3 group-hover:text-rojo-intenso transition-colors duration-300">Ver Cocina</h3>
+                    <p class="text-gris-medio font-medium">Monitorea los pedidos de cocina en tiempo real</p>
+                    <div class="mt-6 flex items-center gap-2 text-rojo-intenso font-bold group-hover:gap-4 transition-all duration-300">
+                        <span>Acceder</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Crear partículas de fondo
+            const particlesContainer = document.getElementById('particles-container');
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particlesContainer.appendChild(particle);
+            }
+
+            // Animar partículas
+            anime({
+                targets: '.particle',
+                opacity: [0, 0.5, 0],
+                translateY: () => anime.random(-100, 100),
+                translateX: () => anime.random(-100, 100),
+                duration: () => anime.random(4000, 8000),
+                delay: anime.stagger(100),
+                loop: true,
+                easing: 'easeInOutQuad'
+            });
+
+            // Animación de entrada del header
+            anime({
+                targets: '#header-title',
+                opacity: [0, 1],
+                translateY: [-30, 0],
+                duration: 800,
+                easing: 'easeOutExpo'
+            });
+
+            anime({
+                targets: '#logout-form',
+                opacity: [0, 1],
+                translateX: [30, 0],
+                duration: 800,
+                delay: 200,
+                easing: 'easeOutExpo'
+            });
+
+            // Animación welcome section
+            anime({
+                targets: '#welcome-section',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800,
+                delay: 400,
+                easing: 'easeOutExpo'
+            });
+
+            // Animación de las tarjetas de estadísticas
+            anime({
+                targets: '#stats-section > div',
+                opacity: [0, 1],
+                translateY: [50, 0],
+                scale: [0.9, 1],
+                duration: 800,
+                delay: anime.stagger(150, {start: 600}),
+                easing: 'easeOutExpo'
+            });
+
+            // Animar números de estadísticas
+            const statNumbers = document.querySelectorAll('.stat-number, .stat-number-red');
+            statNumbers.forEach((stat) => {
+                const target = parseInt(stat.textContent);
+                anime({
+                    targets: stat,
+                    innerHTML: [0, target],
+                    duration: 2000,
+                    delay: 1000,
+                    round: 1,
+                    easing: 'easeOutExpo'
+                });
+            });
+
+            // Animación del título de acciones
+            anime({
+                targets: '#actions-title',
+                opacity: [0, 1],
+                translateX: [-50, 0],
+                duration: 800,
+                delay: 1200,
+                easing: 'easeOutExpo'
+            });
+
+            // Animación de las action cards
+            anime({
+                targets: '#actions-grid > a',
+                opacity: [0, 1],
+                translateY: [60, 0],
+                scale: [0.8, 1],
+                duration: 800,
+                delay: anime.stagger(150, {start: 1400}),
+                easing: 'easeOutExpo'
+            });
+
+            // Efecto parallax en las action cards
+            const actionCards = document.querySelectorAll('.action-card');
+            actionCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    
+                    anime({
+                        targets: card,
+                        rotateX: rotateX,
+                        rotateY: rotateY,
+                        duration: 300,
+                        easing: 'easeOutQuad'
+                    });
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    anime({
+                        targets: card,
+                        rotateX: 0,
+                        rotateY: 0,
+                        duration: 500,
+                        easing: 'easeOutElastic(1, .6)'
+                    });
+                });
+            });
+
+            // Efecto hover en stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this,
+                        translateY: -10,
+                        duration: 300,
+                        easing: 'easeOutExpo'
+                    });
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this,
+                        translateY: 0,
+                        duration: 300,
+                        easing: 'easeOutExpo'
+                    });
+                });
+            });
+
+            // Animación de las esquinas decorativas
+            anime({
+                targets: '.corner-decoration',
+                opacity: [0, 0.2],
+                scale: [0.5, 1],
+                duration: 1000,
+                delay: anime.stagger(50, {start: 1600}),
+                easing: 'easeOutExpo'
+            });
+        });
+    </script>
+</body>
+</html>

@@ -453,7 +453,7 @@
                 </svg>
                 HACER PEDIDO
             </a>
-            <a href="{% url 'contactanos' %}" 
+            <a href="{% url 'usuarios:contactanos' %}" 
                class="bg-negro-principal text-white hover:bg-gris-oscuro font-display font-bold py-4 px-8 rounded-lg text-lg transition-all shadow-lg border-2 border-white hover:scale-105 transform">
                 CONTÁCTANOS
             </a>
@@ -469,11 +469,11 @@
                 &copy; 2025 <span class="text-rojo-intenso font-bold">Hamburguesería Mamá Grande</span> | Todos los derechos reservados
             </p>
             <div class="flex flex-wrap justify-center gap-6 text-sm">
-                <a href="{% url 'index' %}" class="text-white hover:text-rojo-intenso transition-colors">Inicio</a>
+                <a href="{% url 'usuarios:index' %}" class="text-white hover:text-rojo-intenso transition-colors">Inicio</a>
                 <span class="text-gris-oscuro">|</span>
-                <a href="{% url 'sobre_nosotros' %}" class="text-white hover:text-rojo-intenso transition-colors">Sobre Nosotros</a>
+                <a href="{% url 'usuarios:sobre_nosotros' %}" class="text-white hover:text-rojo-intenso transition-colors">Sobre Nosotros</a>
                 <span class="text-gris-oscuro">|</span>
-                <a href="{% url 'contactanos' %}" class="text-white hover:text-rojo-intenso transition-colors">Contáctanos</a>
+                <a href="{% url 'usuarios:contactanos' %}" class="text-white hover:text-rojo-intenso transition-colors">Contáctanos</a>
             </div>
         </div>
     </div>
