@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos en Cocina - Mamá Grande</title>
+
+    <!-- Fuentes y Tailwind -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Íconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -19,6 +25,7 @@
                         'gris-claro': '#E0E0E0',
                         'verde-cocina': '#2D5016',
                         'verde-suave': '#3D6B1F',
+                        'amarillo-prioridad': '#E5B700'
                     }
                 }
             }
@@ -27,96 +34,141 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-display { font-family: 'Montserrat', sans-serif; }
-        .pedido-llevar {
-            border-left: 6px solid #B51E23;
-            background-color: rgba(181, 30, 35, 0.1);
-        }
-        .pedido-local {
-            border-left: 6px solid #2D5016;
-            background-color: rgba(45, 80, 22, 0.1);
-        }
+        .pedido-llevar { border-left: 6px solid #B51E23; background-color: rgba(181,30,35,0.08); }
+        .pedido-local { border-left: 6px solid #2D5016; background-color: rgba(45,80,22,0.08); }
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
     </style>
 </head>
 <body class="bg-negro-principal text-white min-h-screen">
+
     <!-- Header -->
     <header class="bg-negro-principal border-b border-gris-oscuro sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i data-lucide="chef-hat" class="text-rojo-intenso w-9 h-9"></i>
                 <div>
                     <h1 class="font-display font-black text-3xl sm:text-4xl tracking-tight text-rojo-intenso">PEDIDOS EN COCINA</h1>
-                    <p class="text-white mt-2 font-medium">Gestión de órdenes en preparación</p>
+                    <p class="text-gris-claro mt-2 font-medium">Ordenados por prioridad según tiempo y cantidad</p>
                 </div>
-                <a href="javascript:history.back()" 
-                   class="bg-gris-oscuro border-2 border-rojo-intenso hover:bg-rojo-intenso text-white font-display font-black py-2 px-6 rounded-xl uppercase text-sm transition-all duration-300">
-                    ⬅ Volver
-                </a>
             </div>
+            <a href="javascript:history.back()" 
+               class="flex items-center gap-2 bg-gris-oscuro border-2 border-rojo-intenso hover:bg-rojo-intenso text-white font-display font-black py-2 px-6 rounded-xl uppercase text-sm transition-all duration-300">
+                <i data-lucide="arrow-left"></i> Volver
+            </a>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% if pedidos %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for pedido in pedidos %}
-                    <div class="pedido-{{ pedido.tipo }} bg-gris-oscuro rounded-lg p-6 hover:shadow-xl transition-all">
-                        <!-- Header del pedido -->
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-display font-bold text-xl text-white">PEDIDO #{{ pedido.id }}</h3>
-                            {% if pedido.tipo == 'llevar' %}
-                                <span class="bg-rojo-intenso text-white px-3 py-1 rounded-full text-sm font-bold">
-                                    🥡 PARA LLEVAR
-                                </span>
-                            {% else %}
-                                <span class="bg-verde-cocina text-white px-3 py-1 rounded-full text-sm font-bold">
-                                    🍽️ EN LOCAL
-                                </span>
-                            {% endif %}
-                        </div>
-
-                        <!-- Lista de productos -->
-                        <div class="bg-negro-principal rounded-lg p-4 mb-4">
-                            <h4 class="font-display font-bold text-sm text-rojo-intenso mb-3 uppercase">Productos:</h4>
-                            <ul class="space-y-2">
-                                {% for detalle in pedido.detalles.all %}
-                                    <li class="flex justify-between items-start text-white">
-                                        <div class="flex-1">
-                                            <span class="font-medium">{{ detalle.producto.nombre }}</span>
-                                            <span class="text-gris-medio text-sm ml-2">x{{ detalle.cantidad }}</span>
-                                        </div>
-                                        <span class="font-bold text-white">{{ detalle.precio_unitario }} Bs</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-
-                        <!-- Total -->
-                        <div class="bg-negro-principal rounded-lg p-4 mb-4">
-                            <div class="flex justify-between items-center">
-                                <span class="font-display font-bold text-lg text-white">TOTAL:</span>
-                                <span class="font-display font-black text-2xl text-rojo-intenso">{{ pedido.total_monetario }} Bs</span>
-                            </div>
-                        </div>
-
-                        <!-- Botón de acción -->
-                        <form action="{% url 'cocina:cambiar_estado_pedido' pedido.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" 
-                                    class="w-full px-6 py-3 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-base rounded-lg transition-all shadow-lg">
-                                ✓ MARCAR COMO LISTO
-                            </button>
-                        </form>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="text-center py-16">
-                <div class="bg-gris-oscuro rounded-lg p-12 max-w-md mx-auto">
-                    <p class="font-display font-bold text-2xl text-white mb-2">NO HAY PEDIDOS</p>
-                    <p class="text-gris-medio">No hay órdenes pendientes en cocina</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for pedido in pedidos %}
+            <div class="pedido-{{ pedido.tipo }} bg-gris-oscuro rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all fade-in 
+                        {% if pedido.prioridad > 5 %}ring-4 ring-rojo-intenso{% elif pedido.prioridad > 3 %}ring-4 ring-amarillo-prioridad{% else %}ring-4 ring-verde-suave{% endif %}">
+                
+                <!-- Header del pedido -->
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="font-display font-bold text-xl text-white flex items-center gap-2">
+                        <i data-lucide="receipt"></i> Pedido #{{ pedido.id }}
+                    </h3>
+                    {% if pedido.tipo == 'llevar' %}
+                        <span class="flex items-center gap-1 bg-rojo-intenso text-white px-3 py-1 rounded-full text-sm font-bold shadow">
+                            <i data-lucide="shopping-bag"></i> Para llevar
+                        </span>
+                    {% else %}
+                        <span class="flex items-center gap-1 bg-verde-cocina text-white px-3 py-1 rounded-full text-sm font-bold shadow">
+                            <i data-lucide="utensils-crossed"></i> En local
+                        </span>
+                    {% endif %}
                 </div>
+
+                <!-- Info rápida -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-negro-principal rounded-lg p-3">
+                        <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
+                            <i data-lucide="clock"></i> Tiempo de espera
+                        </p>
+                        <p class="font-display font-bold text-lg text-white">{{ pedido.tiempo_espera|floatformat:1 }} min</p>
+                    </div>
+                    <div class="bg-negro-principal rounded-lg p-3">
+                        <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
+                            <i data-lucide="hamburger"></i> Hamburguesas
+                        </p>
+                        <p class="font-display font-bold text-lg text-white">{{ pedido.cantidad_hamburguesas }}</p>
+                    </div>
+                    <div class="bg-negro-principal rounded-lg p-3">
+                        <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
+                            <i data-lucide="zap"></i> Prioridad
+                        </p>
+                        <p class="font-display font-bold text-lg {% if pedido.prioridad > 5 %}text-rojo-intenso{% elif pedido.prioridad > 3 %}text-amarillo-prioridad{% else %}text-verde-suave{% endif %}">
+                            {{ pedido.prioridad|floatformat:2 }}
+                        </p>
+                    </div>
+                    <div class="bg-negro-principal rounded-lg p-3">
+                        <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
+                            <i data-lucide="timer"></i> Estimado total
+                        </p>
+                        <p class="font-display font-bold text-lg text-white">{{ pedido.tiempo_estimado_total|floatformat:1 }} min</p>
+                    </div>
+                </div>
+
+                <!-- Lista de productos -->
+                <div class="bg-negro-principal rounded-lg p-4 mb-4">
+                    <h4 class="font-display font-bold text-sm text-rojo-intenso mb-3 uppercase flex items-center gap-1">
+                        <i data-lucide="list"></i> Productos:
+                    </h4>
+                    <ul class="space-y-2">
+                        {% for detalle in pedido.detalles.all %}
+                        <li class="flex justify-between items-start text-white">
+                            <div class="flex-1">
+                                <span class="font-medium">{{ detalle.producto.nombre }}</span>
+                                <span class="text-gris-medio text-sm ml-2">x{{ detalle.cantidad }}</span>
+                            </div>
+                            <span class="font-bold text-white">{{ detalle.precio_unitario }} Bs</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Total -->
+                <div class="flex justify-between items-center bg-negro-principal rounded-lg p-4 mb-4">
+                    <span class="font-display font-bold text-lg text-white flex items-center gap-2">
+                        <i data-lucide="banknote"></i> TOTAL:
+                    </span>
+                    <span class="font-display font-black text-2xl text-rojo-intenso">{{ pedido.total_monetario }} Bs</span>
+                </div>
+
+                <!-- Botón -->
+                <form action="{% url 'cocina:cambiar_estado_pedido' pedido.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" 
+                        class="w-full flex justify-center items-center gap-2 px-6 py-3 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-base rounded-lg transition-all shadow-lg">
+                        <i data-lucide="check-circle"></i> Marcar como Listo
+                    </button>
+                </form>
             </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16">
+            <div class="bg-gris-oscuro rounded-lg p-12 max-w-md mx-auto">
+                <i data-lucide="inbox" class="w-12 h-12 text-gris-medio mx-auto mb-3"></i>
+                <p class="font-display font-bold text-2xl text-white mb-2">No hay pedidos</p>
+                <p class="text-gris-medio">No hay órdenes pendientes en cocina</p>
+            </div>
+        </div>
         {% endif %}
     </main>
+
+    <!-- Activar íconos Lucide -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Actualización automática cada 30 segundos -->
+    <script>
+        setTimeout(() => location.reload(), 3000);
+    </script>
 </body>
 </html>

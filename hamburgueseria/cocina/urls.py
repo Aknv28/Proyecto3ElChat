@@ -8,13 +8,20 @@ app_name = 'cocina'
 
 urlpatterns = [
     # ============================================
-    # DASHBOARD DE COCINERO
+    # DASHBOARD DEL COCINERO
     # ============================================
     path('dashboard/', never_cache(views.cocinero_dashboard), name='dashboard'),
-    
+
     # ============================================
-    # GESTIÓN DE PEDIDOS (sin cache para tiempo real)
+    # GESTIÓN DE PEDIDOS EN COCINA (VISTA PRINCIPAL)
     # ============================================
     path('pedidos/', never_cache(views.cocina_pedidos), name='pedidos'),
+
+    # Cambiar estado del pedido (en cocina → listo)
     path('pedidos/<int:pedido_id>/cambiar_estado/', never_cache(views.cambiar_estado_pedido), name='cambiar_estado_pedido'),
+
+    # ============================================
+    # API JSON PARA REFRESCO AUTOMÁTICO (AJAX)
+    # ============================================
+    path('api/pedidos-json/', never_cache(views.pedidos_json), name='pedidos_json'),
 ]
