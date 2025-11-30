@@ -174,3 +174,44 @@ def confirmar_pedido(request):
         'total': total,
         'tipo': tipo
     })
+
+@login_required
+@never_cache
+def pedidos_pendientes(request):
+    """Lista todos los pedidos con estado pendiente para el cajero"""
+
+    # Verificar que el usuario es cajero
+    if request.user.rol != 'cajero':
+        messages.error(request, 'No tienes permisos para acceder a esta página.')
+        return redirect('usuarios:login')
+
+    pedidos = Pedido.objects.filter(estado_actual='pendiente').order_by('creado_en')
+
+    return render(request, 'cajero/pedidos_pendientes.html', {
+        'pedidos': pedidos
+    })
+
+from django.shortcuts import get_object_or_404, redirect
+from sistema.models import Pedido
+
+from django.utils import timezone
+
+def cambiar_estado_a_cocina(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    # Cambiar estado a EN COCINA
+    pedido.estado_actual = 'en_cocina'
+
+# Reiniciar tiempo de espera
+    pedido.creado_en = timezone.now()  # Aquí se actualiza la fecha/hora
+    pedido.tiempo_espera = 0  # Si tienes un campo explícito
+
+    pedido.save()
+
+    return redirect('cajero:pedidos_pendientes')
+
+def cancelar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    pedido.estado_actual = "cancelado"
+    pedido.save()
+    return redirect('cajero:pedidos_pendientes')

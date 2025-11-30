@@ -1,0 +1,465 @@
+{% block content %}
+<style>
+    /* Tipografía personalizada */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+    
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #1C1C1C;
+        color: #FFFFFF;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .pedidos-header {
+        background: linear-gradient(135deg, #111111 0%, #1C1C1C 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-left: 6px solid #B51E23;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .pedidos-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+    
+    .pedidos-header h2 {
+        font-weight: 800;
+        color: #FFFFFF;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .pedidos-header h2:before {
+        content: "";
+        font-size: 2.5rem;
+    }
+    
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: linear-gradient(135deg, #AAAAAA 0%, #E0E0E0 100%);
+        color: #111111;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 2px solid transparent;
+    }
+    
+    .btn-volver:hover {
+        background: linear-gradient(135deg, #E0E0E0 0%, #FFFFFF 100%);
+        transform: translateX(-5px);
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        border-color: #B51E23;
+        color: #111111;
+        text-decoration: none;
+    }
+    
+    .btn-volver:before {
+        content: "←";
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+    .btn-volver:active {
+        transform: translateX(-3px);
+    }
+    
+    .tabla-container {
+        background-color: #111111;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
+    
+    .table {
+        width: 100%;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    .table thead {
+        background: linear-gradient(135deg, #B51E23 0%, #D9322A 100%);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .table thead th {
+        color: #FFFFFF;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        padding: 1.2rem 1rem;
+        border: none;
+        text-align: left;
+        white-space: nowrap;
+    }
+    
+    .table tbody tr {
+        background-color: #1C1C1C;
+        border-bottom: 2px solid #111111;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .table tbody tr:hover {
+        background-color: #252525;
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(181, 30, 35, 0.2);
+    }
+    
+    .table tbody tr.table-warning {
+        background: linear-gradient(90deg, #D9322A 0%, #B51E23 100%);
+        animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    .table tbody tr.table-warning:hover {
+        background: linear-gradient(90deg, #B51E23 0%, #D9322A 100%);
+    }
+    
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.9; }
+    }
+    
+    .table tbody tr.table-warning td {
+        color: #FFFFFF !important;
+        font-weight: 600;
+    }
+    
+    .table tbody td {
+        padding: 1.2rem 1rem;
+        border: none;
+        color: #E0E0E0;
+        vertical-align: middle;
+    }
+    
+    .numero-pedido {
+        font-weight: 800;
+        color: #B51E23;
+        font-size: 1.4rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .table-warning .numero-pedido {
+        color: #FFFFFF;
+    }
+    
+    .tipo-pedido {
+        display: inline-block;
+        background-color: #B51E23;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+    }
+    
+    .table-warning .tipo-pedido {
+        background-color: #111111;
+    }
+    
+    .total-pedido {
+        font-weight: 800;
+        color: #FFFFFF;
+        font-size: 1.3rem;
+    }
+    
+    .fecha-pedido {
+        font-size: 0.9rem;
+        color: #AAAAAA;
+    }
+    
+    .tiempo-espera {
+        display: inline-block;
+        background-color: #1C1C1C;
+        border: 2px solid #B51E23;
+        color: #B51E23;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        min-width: 60px;
+        text-align: center;
+    }
+    
+    .table-warning .tiempo-espera {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: #FFFFFF;
+        color: #FFFFFF;
+    }
+    
+    .detalles-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+    
+    .detalles-lista::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .detalles-lista::-webkit-scrollbar-track {
+        background: #111111;
+        border-radius: 10px;
+    }
+    
+    .detalles-lista::-webkit-scrollbar-thumb {
+        background: #B51E23;
+        border-radius: 10px;
+    }
+    
+    .detalles-lista li {
+        padding: 0.4rem 0;
+        color: #E0E0E0;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .detalles-lista li:before {
+        content: "▸";
+        color: #B51E23;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .table-warning .detalles-lista li {
+        color: #FFFFFF;
+    }
+    
+    .table-warning .detalles-lista li:before {
+        color: #FFFFFF;
+    }
+    
+    .btn-enviar-cocina,
+    .btn-cancelar {
+        display: inline-block;
+        color: #FFFFFF;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    
+    .btn-enviar-cocina {
+        background: linear-gradient(135deg, #B51E23 0%, #D9322A 100%);
+        box-shadow: 0 4px 12px rgba(181, 30, 35, 0.3);
+    }
+    
+    .btn-enviar-cocina:hover {
+        background: linear-gradient(135deg, #D9322A 0%, #B51E23 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(181, 30, 35, 0.5);
+    }
+    
+    .btn-cancelar {
+        background: linear-gradient(135deg, #555 0%, #333 100%);
+        border: 2px solid #B51E23;
+        margin-left: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-cancelar:hover {
+        background: linear-gradient(135deg, #B51E23 0%, #D9322A 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(181, 30, 35, 0.4);
+    }
+
+    .estado-cancelado {
+        color: #D9322A;
+        font-weight: 700;
+        font-style: italic;
+    }
+    
+    .estado-cocina {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #AAAAAA;
+        font-weight: 600;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+    
+    .estado-cocina:before {
+        content: "🔥";
+        font-size: 1.2rem;
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #1C1C1C 0%, #111111 100%);
+        border: 3px dashed #B51E23;
+        color: #E0E0E0;
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .alert-info:before {
+        content: "ℹ️";
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 1rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .table {
+            font-size: 0.9rem;
+        }
+        
+        .numero-pedido {
+            font-size: 1.2rem;
+        }
+        
+        .total-pedido {
+            font-size: 1.1rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+        
+        .pedidos-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .pedidos-header-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn-volver {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .tabla-container {
+            overflow-x: auto;
+        }
+        
+        .table {
+            min-width: 900px;
+        }
+
+        .btn-enviar-cocina,
+        .btn-cancelar {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin: 0.25rem 0;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="pedidos-header">
+        <div class="pedidos-header-content">
+            <h2>Pedidos Pendientes</h2>
+            <a href="javascript:history.back()" class="btn-volver">Volver</a>
+        </div>
+    </div>
+    
+    {% if pedidos %}
+    <div class="tabla-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>N° Pedido</th>
+                    <th>Tipo</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Tiempo</th>
+                    <th>Detalles</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in pedidos %}
+                <tr {% if p.estado_actual == "en_cocina" %}class="table-warning"{% endif %}>
+                    <td>
+                        <span class="numero-pedido">{{ p.numero_pedido }}</span>
+                    </td>
+                    <td>
+                        <span class="tipo-pedido">{{ p.get_tipo_display }}</span>
+                    </td>
+                    <td>
+                        <span class="total-pedido">Bs {{ p.total_monetario }}</span>
+                    </td>
+                    <td>
+                        <span class="fecha-pedido">{{ p.creado_en|date:"d/m/Y H:i" }}</span>
+                    </td>
+                    <td>
+                        <span class="tiempo-espera">{{ p.tiempo_espera|default:"0" }}</span>
+                    </td>
+                    <td>
+                        <ul class="detalles-lista">
+                        {% for d in p.detalles.all %}
+                            <li>{{ d.producto.nombre }} x {{ d.cantidad }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        {% if p.estado_actual == "pendiente" %}
+                            <a href="{% url 'cajero:cambiar_estado' p.id %}" class="btn-enviar-cocina">Enviar a cocina</a>
+                            <a href="{% url 'cajero:cancelar_pedido' p.id %}" class="btn-cancelar">Cancelar</a>
+                        {% elif p.estado_actual == "en_cocina" %}
+                            <span class="estado-cocina">En cocina</span>
+                        {% elif p.estado_actual == "cancelado" %}
+                            <span class="estado-cancelado">Cancelado</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert-info">No hay pedidos pendientes en este momento.</div>
+    {% endif %}
+</div>
+{% endblock %}

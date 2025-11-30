@@ -131,18 +131,37 @@
         </div>
 
         <!-- Main Action Card -->
-        <div class="max-w-2xl mx-auto mb-8">
-            <a href="{% url 'cajero:menu' %}" 
-               class="block bg-rojo-intenso hover:bg-rojo-suave rounded-2xl p-12 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/30">
-                <div class="flex items-center justify-center mb-6">
-                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                </div>
-                <h2 class="text-4xl font-black text-white text-center mb-3">NUEVO PEDIDO</h2>
-                <p class="text-white/80 text-center text-lg font-medium">Realizar un nuevo pedido</p>
-            </a>
+<div class="max-w-2xl mx-auto mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- BOTÓN: NUEVO PEDIDO -->
+    <a href="{% url 'cajero:menu' %}" 
+       class="block bg-rojo-intenso hover:bg-rojo-suave rounded-2xl p-12 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-rojo-intenso/30">
+        <div class="flex items-center justify-center mb-6">
+            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
         </div>
+        <h2 class="text-3xl font-black text-white text-center mb-3">NUEVO PEDIDO</h2>
+        <p class="text-white/80 text-center text-lg font-medium">Realizar un nuevo pedido</p>
+    </a>
+
+    <!-- BOTÓN NUEVO: PEDIDOS EN CURSO -->
+    <a href="{% url 'cajero:pedidos_pendientes' %}"
+       class="block bg-gris-oscuro hover:bg-gris-medio/30 border border-gris-medio/20 hover:border-rojo-intenso/40 rounded-2xl p-12 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-gris-medio/40">
+        <div class="flex items-center justify-center mb-6">
+            <svg class="w-16 h-16 text-rojo-intenso" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 7h18M3 12h18M3 17h18"></path>
+            </svg>
+        </div>
+        <h2 class="text-3xl font-black text-white text-center mb-3">PEDIDOS EN CURSO</h2>
+        <p class="text-gris-medio text-center text-lg font-medium">
+            Ver pedidos enviados a cocina
+        </p>
+    </a>
+
+</div>
+
 
         <!-- Información del cajero -->
         <div class="max-w-2xl mx-auto">

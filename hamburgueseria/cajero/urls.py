@@ -17,4 +17,19 @@ urlpatterns = [
     # ============================================
     path('menu/', never_cache(views.menu_view), name='menu'),
     path('confirmar_pedido/', never_cache(views.confirmar_pedido), name='confirmar_pedido'),
+
+    # ============================================
+    # PEDIDOS
+    # ============================================
+    path('pedidos/pendientes/', views.pedidos_pendientes, name='pedidos_pendientes'),
+    
+    # Cambiar a "en cocina"
+    path('pedidos/<int:pedido_id>/a-cocina/', 
+         views.cambiar_estado_a_cocina, 
+         name='cambiar_estado'),
+    
+    # 👉 NUEVA RUTA PARA CANCELAR PEDIDO
+    path('pedidos/<int:pedido_id>/cancelar/', 
+         views.cancelar_pedido, 
+         name='cancelar_pedido'),
 ]

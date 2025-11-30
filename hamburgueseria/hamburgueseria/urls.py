@@ -13,7 +13,11 @@ urlpatterns = [
     path('', include('usuarios.urls')),  # Páginas públicas, auth y gestión de usuarios
     path('administracion/', include('administracion.urls')),  # Dashboard y funciones de admin
     path('cajero/', include('cajero.urls')),  # Menú, pedidos y dashboard de cajero
-    path('cocina/', include('cocina.urls')),  # Dashboard y gestión de pedidos en cocina
+    path('cocina/',
+    include(('cocina.urls', 'cocina'), namespace='cocina')),  # Dashboard y gestión de pedidos en cocina
+
+
+    path('', include('sistema.urls')),  # Asegúrate de tener esto
 ]
 
 # ============================================

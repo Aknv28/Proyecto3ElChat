@@ -95,7 +95,7 @@ class Pedido(models.Model):
         return total
 
     # 🔸 Calcular prioridad dinámica (M/M/1 con prioridad no preemptiva)
-    def calcular_prioridad(self, alpha=0.01):
+    def calcular_prioridad(self, alpha=0.05):
         cantidad = self.cantidad_hamburguesas()
     # Usa timezone.now() para compatibilidad con USE_TZ=True
         tiempo_espera_min = (timezone.now() - self.creado_en).total_seconds() / 60

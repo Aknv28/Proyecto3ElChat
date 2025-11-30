@@ -4,18 +4,27 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
+from django.http import JsonResponse
 from datetime import datetime
+
 from sistema.models import Pedido
+
+
+# -------------------------------------------
+# Helper: verificar roles permitidos
+# -------------------------------------------
+def permitir_cocina(user):
+    return user.rol in ['cocinero', 'admin']
+
 
 # ============================================
 # DASHBOARD DE COCINERO
 # ============================================
-
 @login_required
 @never_cache
 def cocinero_dashboard(request):
-    """Dashboard principal del cocinero"""
-    if request.user.rol != 'cocinero':
+    """Dashboard principal del cocinero o admin"""
+    if not permitir_cocina(request.user):
         messages.error(request, 'No tienes permisos para acceder a esta página.')
         return redirect('usuarios:login')
 
@@ -30,27 +39,27 @@ def cocinero_dashboard(request):
 # ============================================
 # GESTIÓN DE PEDIDOS EN COCINA
 # ============================================
-
 @login_required
 @never_cache
 def cocina_pedidos(request):
-    """Lista de pedidos ordenados por prioridad según teoría de colas M/M/1"""
-    if request.user.rol != 'cocinero':
+    """Lista de pedidos ordenados por prioridad"""
+    
+    if not permitir_cocina(request.user):
         messages.error(request, 'No tienes permisos para acceder a esta página.')
         return redirect('usuarios:login')
     
-    # Obtener pedidos que están pendientes o en cocina
+    # Pedidos activos
     pedidos = Pedido.objects.filter(
-        estado_actual__in=['pendiente', 'en_cocina']
+        estado_actual__in=['en_cocina']
     )
 
-    # Recalcular prioridad para cada pedido
+    # Recalcular prioridad
     for pedido in pedidos:
         pedido.calcular_tiempo_estimado()
         pedido.calcular_prioridad(alpha=0.05)
         pedido.save()
 
-    # Ordenar por prioridad (mayor primero)
+    # Orden descendente por prioridad
     pedidos_ordenados = sorted(pedidos, key=lambda x: x.prioridad, reverse=True)
 
     return render(request, 'cocina/pedidos_en_cocina.html', {
@@ -61,12 +70,11 @@ def cocina_pedidos(request):
 # ============================================
 # CAMBIAR ESTADO DE PEDIDO
 # ============================================
-
 @login_required
 @never_cache
 def cambiar_estado_pedido(request, pedido_id):
-    """Cambia el estado de un pedido de 'en_cocina' a 'listo'"""
-    if request.user.rol != 'cocinero':
+    """Cambia de 'en_cocina' a 'listo'"""
+    if not permitir_cocina(request.user):
         messages.error(request, 'No tienes permisos para acceder a esta página.')
         return redirect('usuarios:login')
     
@@ -78,34 +86,34 @@ def cambiar_estado_pedido(request, pedido_id):
             pedido.save()
             messages.success(request, f'✅ Pedido #{pedido.numero_pedido} marcado como listo.')
         else:
-            messages.warning(request, f'⚠️ El pedido #{pedido.numero_pedido} ya no está disponible para cambiar estado.')
+            messages.warning(request, f'⚠️ El pedido #{pedido.numero_pedido} ya no está disponible.')
         
         return redirect('cocina:pedidos')
     
     return redirect('cocina:pedidos')
 
 
-
-
-from django.http import JsonResponse
-
+# ============================================
+# API JSON PARA REFRESCO AUTOMÁTICO
+# ============================================
 @login_required
 @never_cache
 def pedidos_json(request):
-    """Devuelve los pedidos actualizados como JSON (para refrescar dinámicamente la vista)"""
-    if request.user.rol != 'cocinero':
+    """Devuelve los pedidos actualizados como JSON"""
+    
+    if not permitir_cocina(request.user):
         return JsonResponse({'error': 'No autorizado'}, status=403)
 
     pedidos = Pedido.objects.filter(
         estado_actual__in=['pendiente', 'en_cocina']
     )
 
-    # recalcular prioridad antes de enviar
     data = []
     for p in pedidos:
         p.calcular_tiempo_estimado()
         p.calcular_prioridad()
         p.save()
+        
         data.append({
             'id': p.id,
             'numero_pedido': str(p.numero_pedido),
@@ -125,7 +133,7 @@ def pedidos_json(request):
             ]
         })
 
-    # ordenar de mayor a menor prioridad
+    # Ordenar por prioridad
     data.sort(key=lambda x: x['prioridad'], reverse=True)
 
     return JsonResponse({'pedidos': data})

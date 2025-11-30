@@ -42,9 +42,16 @@ INSTALLED_APPS = [
     'administracion',
     'cajero',
     'cocina',
+
+
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Agregar al inicio
+    'django.middleware.security.SecurityMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'hamburgueseria.urls'
 
@@ -89,6 +98,12 @@ DATABASES = {
         'HOST': 'bhaqhbluqqj0yoejipij-mysql.services.clever-cloud.com',  # El host proporcionado
         'PORT': '3306',  # El puerto proporcionado
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
 }
 
 
