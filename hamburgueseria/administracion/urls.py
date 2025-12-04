@@ -18,4 +18,5 @@ urlpatterns = [
     
     # Nota: El CRUD de usuarios se mantiene en usuarios.urls.py
     # pero se accede desde este módulo con permisos de administrador
+
 ]

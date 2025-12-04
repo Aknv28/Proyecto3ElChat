@@ -104,31 +104,6 @@
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-12">
         <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Ventas de Hoy -->
-            <div class="bg-gris-oscuro rounded-xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/30 transition-all">
-                <div class="flex justify-between items-center mb-3">
-                    <p class="text-gris-medio font-medium">Ventas de Hoy</p>
-                    <span class="text-xs bg-rojo-intenso/10 text-rojo-intenso px-3 py-1 rounded-full font-bold">ACTIVO</span>
-                </div>
-                <p class="text-4xl font-black text-rojo-intenso mb-2">Bs. {{ ventas_hoy|default:"0.00" }}</p>
-                <p class="text-gris-medio text-sm font-medium">{{ transacciones_hoy|default:0 }} transacciones</p>
-            </div>
-
-            <!-- Pedidos Pendientes -->
-            <div class="bg-gris-oscuro rounded-xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/30 transition-all">
-                <p class="text-gris-medio font-medium mb-3">Pedidos Activos</p>
-                <p class="text-4xl font-black text-white mb-2">{{ pedidos_activos|default:0 }}</p>
-                <p class="text-gris-medio text-sm font-medium">En proceso</p>
-            </div>
-
-            <!-- Promedio de Venta -->
-            <div class="bg-gris-oscuro rounded-xl p-8 border border-gris-medio/10 hover:border-rojo-intenso/30 transition-all">
-                <p class="text-gris-medio font-medium mb-3">Promedio por Venta</p>
-                <p class="text-4xl font-black text-white mb-2">Bs. {{ promedio_venta|default:"0.00" }}</p>
-                <p class="text-gris-medio text-sm font-medium">Ticket promedio</p>
-            </div>
-        </div>
 
         <!-- Main Action Card -->
 <div class="max-w-2xl mx-auto mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -187,18 +162,7 @@
         </div>
 
         <!-- Resumen Rápido -->
-        <div class="max-w-2xl mx-auto mt-6">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gris-oscuro rounded-xl p-5 border border-gris-medio/10 text-center">
-                    <p class="text-gris-medio text-sm font-medium mb-2">Pedidos Completados</p>
-                    <p class="text-3xl font-black text-white">{{ pedidos_completados_hoy|default:0 }}</p>
-                </div>
-                <div class="bg-gris-oscuro rounded-xl p-5 border border-gris-medio/10 text-center">
-                    <p class="text-gris-medio text-sm font-medium mb-2">Último Pedido</p>
-                    <p class="text-3xl font-black text-white">{{ tiempo_ultimo_pedido|default:"--:--" }}</p>
-                </div>
-            </div>
-        </div>
+        
     </main>
 
     <script>

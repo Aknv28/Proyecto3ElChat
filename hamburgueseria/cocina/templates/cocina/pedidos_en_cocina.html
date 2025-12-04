@@ -25,7 +25,8 @@
                         'gris-claro': '#E0E0E0',
                         'verde-cocina': '#2D5016',
                         'verde-suave': '#3D6B1F',
-                        'amarillo-prioridad': '#E5B700'
+                        'amarillo-prioridad': '#E5B700',
+                        'naranja-urgente': '#FF6B35'
                     }
                 }
             }
@@ -38,6 +39,38 @@
         .pedido-local { border-left: 6px solid #2D5016; background-color: rgba(45,80,22,0.08); }
         .fade-in { animation: fadeIn 0.8s ease-in-out; }
         @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+        
+        /* 🔥 Animación especial para pedido en preparación */
+        .en-preparacion {
+            position: relative;
+            animation: pulseGlow 2s ease-in-out infinite;
+            border: 3px solid #B51E23 !important;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(181,30,35,0.6), 0 0 40px rgba(181,30,35,0.3);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(181,30,35,0.8), 0 0 60px rgba(181,30,35,0.4);
+                transform: scale(1.02);
+            }
+        }
+        
+        /* Badge animado */
+        .badge-preparacion {
+            animation: badgePulse 1.5s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Indicador de posición */
+        .posicion-badge {
+            background: linear-gradient(135deg, #1C1C1C 0%, #333 100%);
+            border: 2px solid #444;
+        }
     </style>
 </head>
 <body class="bg-negro-principal text-white min-h-screen">
@@ -49,7 +82,10 @@
                 <i data-lucide="chef-hat" class="text-rojo-intenso w-9 h-9"></i>
                 <div>
                     <h1 class="font-display font-black text-3xl sm:text-4xl tracking-tight text-rojo-intenso">PEDIDOS EN COCINA</h1>
-                    <p class="text-gris-claro mt-2 font-medium">Ordenados por prioridad según tiempo y cantidad</p>
+                    <p class="text-gris-claro mt-2 font-medium">
+                        <i data-lucide="flame" class="inline w-4 h-4 text-naranja-urgente"></i>
+                        
+                    </p>
                 </div>
             </div>
             <a href="javascript:history.back()" 
@@ -62,13 +98,36 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% if pedidos %}
+        
+        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for pedido in pedidos %}
             <div class="pedido-{{ pedido.tipo }} bg-gris-oscuro rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all fade-in 
-                        {% if pedido.prioridad > 5 %}ring-4 ring-rojo-intenso{% elif pedido.prioridad > 3 %}ring-4 ring-amarillo-prioridad{% else %}ring-4 ring-verde-suave{% endif %}">
-                
+                        {% if pedido.en_preparacion %}en-preparacion{% elif pedido.prioridad > 6 %}ring-4 ring-rojo-intenso{% elif pedido.prioridad > 4 %}ring-4 ring-amarillo-prioridad{% else %}ring-4 ring-verde-suave{% endif %}
+                        relative">
+
+                <!-- 🔥 Badge especial para pedido en preparación -->
+                {% if pedido.en_preparacion %}
+                <div class="absolute -top-3 -right-3 badge-preparacion">
+                    <div class="bg-gradient-to-r from-rojo-intenso to-naranja-urgente text-white px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 font-display font-black text-xs uppercase">
+                        <i data-lucide="flame" class="w-4 h-4"></i>
+                        <span>Preparando Ahora</span>
+                        <i data-lucide="flame" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Badge de posición en cola -->
+                <div class="absolute -top-3 -right-3">
+                    <div class="posicion-badge text-white px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 font-display font-bold text-xs">
+                        <i data-lucide="list-ordered" class="w-3.5 h-3.5"></i>
+                        <span>POSICIÓN #{{ forloop.counter }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Header del pedido -->
-                <div class="flex justify-between items-start mb-4">
+                <div class="flex justify-between items-start mb-4 {% if pedido.en_preparacion %}mt-4{% endif %}">
                     <h3 class="font-display font-bold text-xl text-white flex items-center gap-2">
                         <i data-lucide="receipt"></i> Pedido #{{ pedido.id }}
                     </h3>
@@ -85,11 +144,13 @@
 
                 <!-- Info rápida -->
                 <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="bg-negro-principal rounded-lg p-3">
+                    <div class="bg-negro-principal rounded-lg p-3 {% if pedido.tiempo_espera > 15 %}ring-2 ring-naranja-urgente{% endif %}">
                         <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
                             <i data-lucide="clock"></i> Tiempo de espera
                         </p>
-                        <p class="font-display font-bold text-lg text-white">{{ pedido.tiempo_espera|floatformat:1 }} min</p>
+                        <p class="font-display font-bold text-lg {% if pedido.tiempo_espera > 15 %}text-naranja-urgente{% else %}text-white{% endif %}">
+                            {{ pedido.tiempo_espera|floatformat:1 }} min
+                        </p>
                     </div>
                     <div class="bg-negro-principal rounded-lg p-3">
                         <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
@@ -97,17 +158,21 @@
                         </p>
                         <p class="font-display font-bold text-lg text-white">{{ pedido.cantidad_hamburguesas }}</p>
                     </div>
-                    <div class="bg-negro-principal rounded-lg p-3">
+                    <div class="bg-negro-principal rounded-lg p-3 {% if pedido.en_preparacion %}ring-2 ring-rojo-intenso{% endif %}">
                         <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
                             <i data-lucide="zap"></i> Prioridad
                         </p>
-                        <p class="font-display font-bold text-lg {% if pedido.prioridad > 5 %}text-rojo-intenso{% elif pedido.prioridad > 3 %}text-amarillo-prioridad{% else %}text-verde-suave{% endif %}">
-                            {{ pedido.prioridad|floatformat:2 }}
+                        <p class="font-display font-bold text-lg {% if pedido.en_preparacion %}text-rojo-intenso{% elif pedido.prioridad > 6 %}text-rojo-intenso{% elif pedido.prioridad > 4 %}text-amarillo-prioridad{% else %}text-verde-suave{% endif %}">
+                            {% if pedido.en_preparacion %}
+                                <i data-lucide="star" class="inline w-4 h-4"></i> MAX
+                            {% else %}
+                                {{ pedido.prioridad|floatformat:2 }}
+                            {% endif %}
                         </p>
                     </div>
                     <div class="bg-negro-principal rounded-lg p-3">
                         <p class="text-xs text-gris-medio uppercase flex items-center gap-1">
-                            <i data-lucide="timer"></i> Estimado total
+                            <i data-lucide="timer"></i> Est. prep
                         </p>
                         <p class="font-display font-bold text-lg text-white">{{ pedido.tiempo_estimado_total|floatformat:1 }} min</p>
                     </div>
@@ -143,8 +208,19 @@
                 <form action="{% url 'cocina:cambiar_estado_pedido' pedido.id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" 
-                        class="w-full flex justify-center items-center gap-2 px-6 py-3 bg-rojo-intenso hover:bg-rojo-suave text-white font-display font-bold text-base rounded-lg transition-all shadow-lg">
-                        <i data-lucide="check-circle"></i> Marcar como Listo
+                        class="w-full flex justify-center items-center gap-2 px-6 py-3 
+                               {% if pedido.en_preparacion %}
+                               bg-gradient-to-r from-rojo-intenso to-naranja-urgente hover:from-naranja-urgente hover:to-rojo-intenso
+                               {% else %}
+                               bg-rojo-intenso hover:bg-rojo-suave
+                               {% endif %}
+                               text-white font-display font-bold text-base rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i data-lucide="check-circle"></i> 
+                        {% if pedido.en_preparacion %}
+                            Terminar Preparación
+                        {% else %}
+                            Marcar como Listo
+                        {% endif %}
                     </button>
                 </form>
             </div>
